@@ -1,0 +1,9 @@
+<launch>
+<!--	<env name="ROS_MASTER_URI" value="http://msl-Lenovo:11311" />    -->
+	
+	<group ns="ouijabot1" >
+		<node name="mcu_comm" pkg="ouijabot" type="mcu_comm_node.py" output="screen">
+		</node>
+	</group>
+
+</launch>
