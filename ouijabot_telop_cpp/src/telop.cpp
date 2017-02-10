@@ -27,7 +27,7 @@ Telop::Telop()
   joy_subscriber_ = node_handle_.subscribe<sensor_msgs::Joy>("/joy", 20, &Telop::joystick_callback, this); // must pass in: 1. the callback function; 2. the object instance by "this" pointer
 
   // create velocity publisher
-  velocity_publisher_ = node_handle_.advertise<geometry_msgs::Twist>("ouijabot1/cmd_vel", 10);
+  velocity_publisher_ = node_handle_.advertise<geometry_msgs::Twist>("vel_out", 10);
 }
 
 void Telop::joystick_callback(const sensor_msgs::JoyConstPtr &joy)

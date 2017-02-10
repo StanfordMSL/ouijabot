@@ -1,0 +1,8 @@
+<launch>
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+    </node>
+
+    <node name="telop" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
+        <remap from="vel_out" to="/ouijabot1/cmd_vel" /> <!-- change the index of the robot here -->
+    </node>
+</launch>
