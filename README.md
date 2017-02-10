@@ -2,6 +2,7 @@
 Omnidirectional robot developed at Multi-robot Systems Lab, Stanford University
 
 ### Robot side: use package "ouijabot"
+- ssh into the robot
 - Check /etc/hosts to see if the master IP has been added
 - Edit ~/.bahsrc so that the following two lines reflect the robot's own IP as well as the master IP
 ```
@@ -12,6 +13,7 @@ export ROS_MASTER_URI=http://msl-Lenovo:11311 # PC hostname/IP
 - catkin_make the package
 - `source ./catkin_ws/devel/setup.bash`
 - Fire `roslaunch ouijabot ouijabot.launch` and ready to go!
+- **Important**: please poweroff the Raspberry Pi (run `sudo poweroff` in ssh)  before turning off the Ouijabot
 
 
 ### Laptop side: use package "ouijabot_telop_cpp"
