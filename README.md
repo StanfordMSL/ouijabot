@@ -18,3 +18,6 @@ export ROS_MASTER_URI=http://msl-Lenovo:11311 # PC hostname/IP
 - Check /etc/hosts and ~/.bashrc like we did for the robot
 - In **ouijabot_telop_cpp/launch/telop.launch**, change the index in **remap from="vel_out" to="/ouijabot1/cmd_vel"** if need to control different ouijabots
 - Fire `roslaunch ouijabot_telop_cpp telop.launch` and enjoy driving the Ouijabot!
+
+### Reference
+Zijian Wang, Guang Yang, Xuanshuo Su, and Mac Schwager, "OuijaBots: Omnidirectional Robots for Cooperative Object Transport with Rotation Control using No Communication", *Proc. of the International Conference on Distributed Autonomous Robotics Systems (DARS)*, London, UK, November, 2016
