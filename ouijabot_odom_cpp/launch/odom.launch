@@ -1,0 +1,50 @@
+<launch>
+
+  <!-- ========== MOCAP_OPTITRACK ========== -->
+  <arg name="mocap_config_file"
+    default="$(find mocap_interface)/config/mocap.yaml" />
+  <node pkg="mocap_optitrack" type="mocap_node" name="mocap_node" respawn="false" launch-prefix="" required="true" output="screen">
+    <rosparam file="$(arg mocap_config_file)" command="load" />
+  </node>
+
+	<!-- ========== JOY ========== -->
+  <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+  </node>
+
+  <!-- ========== OUIJABOT TELEOP ========== -->
+  <node name="telop" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
+    <remap from="vel_out" to="/ouijabot1/cmd_vel" /> <!-- change the index of the robot here -->
+  </node>
+
+  <!-- ========== OUIJABOT ODOMETRY ========== -->
+  <node name="odom" pkg="ouijabot_odom_cpp" type="odom"  output="screen">
+    <remap from="/robot/pose" to="/robot_1/pose"/>
+    <remap from="/ouijabot/wheel_spd" to="/ouijabot1/wheel_spd"/>
+    <remap from="/ouijabot/imu" to="/ouijabot1/imu"/>
+    <remap from="/robot/odom" to="/robot_1/odom"/>
+    <remap from="/robot/odom_gt" to="/robot_1/odom_gt"/>
+    <param name="DISPLAY_DATA_BOOL" type="int" value="0" />
+    <param name="POSITION_COVARIANCE" type="double" value="0.0" />
+    <param name="ORIENTATION_COVARIANCE" type="double" value="0.0" />
+    <param name="VELOCITY_COVARIANCE" type="double" value="0.00001" />
+    <param name="ROTATION_RATE_COVARIANCE" type="double" value="0.00001" />
+  </node>
+  <!-- ========== LINK BETWEEN ODOMETRY GROUND TRUTH AND WORLD WORLD ========== -->
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_gt"
+    args="0 0 0 0 0 0 /world /odom_gt_frame 10">
+  </node>
+  <!-- ========== LINK BETWEEN ODOMETRY ESTIMATOIN AND WORLD WORLD ========== -->
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom"
+    args="0 0 0 0 0 0 /world /odom_frame 10">
+  </node>
+
+  <!-- ========== RVIZ ========== -->
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" 
+    args="-f world_rviz -d $(find ouijabot_odom_cpp)/rviz/odom_testing.rviz" required="true">
+  </node>
+  <!-- ========== LINK BETWEEN MOCAP_OPTITRACK WORLD AND RVIZ WORLD ========== -->
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_rviz_world"
+    args="0 0 0 1.5708 0 3.1415 /world_rviz /world 10">
+  </node>
+
+</launch>
