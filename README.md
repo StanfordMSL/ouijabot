@@ -24,4 +24,4 @@ export ROS_MASTER_URI=http://msl-Lenovo:11311 # PC hostname/IP
 ### Reference
 If you use the robot, please consider citing the following article:
 
-Zijian Wang, Guang Yang, Xuanshuo Su, and Mac Schwager, "OuijaBots: Omnidirectional Robots for Cooperative Object Transport with Rotation Control using No Communication", *Proc. of the International Conference on Distributed Autonomous Robotics Systems (DARS)*, London, UK, November, 2016
+Zijian Wang, Guang Yang, Xuanshuo Su, and Mac Schwager, "OuijaBots: Omnidirectional Robots for Cooperative Object Transport with Rotation Control using No Communication", *Proc. of the International Symposium on Distributed Autonomous Robotics Systems (DARS)*, London, UK, November, 2016
