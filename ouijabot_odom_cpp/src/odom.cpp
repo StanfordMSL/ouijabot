@@ -37,6 +37,9 @@ class mocapInterfaceClass {
 
   ros::Publisher odom_ground_truth_pub_;
   ros::Publisher odom_pub_;
+
+  tf::TransformBroadcaster odom_ground_truth_broadcaster;
+  tf::TransformBroadcaster odom_broadcaster;
   
   // Initialize Variables
   int displayData, useOptitrack;
@@ -191,6 +194,11 @@ public:
         vpsi = vpsi + vpsiNoise(generator);
       }
 
+      // Compute Velocity in Body Frame (/base_link)
+      // v^b = R_bg v^g
+      double vxLocal = cos(psiOdom_)*vx + sin(psiOdom_)*vy;
+      double vyLocal = -sin(psiOdom_)*vx + cos(psiOdom_)*vy;
+
       // Add Noise in Planar Coordinates Only
       double xOdom = xOdom_;
       double yOdom = yOdom_;
@@ -220,8 +228,7 @@ public:
       odom_trans.transform.translation.y = yOdom;
       odom_trans.transform.translation.z = 0.0;
       odom_trans.transform.rotation = odom_quat;
-      tf::TransformBroadcaster odom_broadcaster;
-      odom_broadcaster.sendTransform(odom_trans);
+      odom_ground_truth_broadcaster.sendTransform(odom_trans);
 
       // Set Final Planar Pose
       nav_msgs::Odometry odomMsg;
@@ -234,8 +241,8 @@ public:
 
       // Set Final Planar Velocity
       odomMsg.child_frame_id = "base_gt_link";
-      odomMsg.twist.twist.linear.x = vx;
-      odomMsg.twist.twist.linear.y = vy;
+      odomMsg.twist.twist.linear.x = vxLocal;
+      odomMsg.twist.twist.linear.y = vyLocal;
       odomMsg.twist.twist.linear.z = 0.0;
       odomMsg.twist.twist.angular.x = 0.0;
       odomMsg.twist.twist.angular.y = 0.0;
@@ -263,7 +270,7 @@ public:
       if (displayData==1) {
         std::cout << "Ground Truth Pose:" << endl << "x: " << xCur << endl << "y: " << yCur << endl << "psi: " << psiCur << endl << endl;
         std::cout << "Odometry Pose:" << endl << "x: " << xOdom << endl << "y: " << yOdom << endl << "psi: " << psiOdom << endl << endl;
-        // std::cout << "Velocity:" << endl << "vx: " << vx << endl << "vy: " << vy << endl << "vpsi: " << vpsi << endl << endl;
+        // std::cout << "Velocity:" << endl << "vx: " << vxLocal << endl << "vy: " << vyLocal << endl << "vpsi: " << vpsi << endl << endl;
       }
 
     } // and if not initializing
@@ -301,15 +308,15 @@ public:
 
       // Odometry from Wheel Speeds
       double rw = 0.08;
-      double vx = (sqrt(2.0)*rw/4.0) * (w3-w1+w4-w2);
-      double vy = (sqrt(2.0)*rw/4.0) * (w3-w1+w2-w4);
-      double vpsi = gyro_z;
+      double vxLocal = (sqrt(2.0)*rw/4.0) * (w3-w1+w4-w2);
+      double vyLocal = (sqrt(2.0)*rw/4.0) * (w3-w1+w2-w4);
+      double vpsiLocal = gyro_z;
 
-      // Estimate Robot Pose
+      // Estimate Robot Pose from Body Frame Velocties
       double dt = (timeCurEst-timePrevEst).toSec();
-      double psiOdom = psiOdomEst_ + vpsi*dt;
-      double xOdom = xOdomEst_ + cos(psiOdom)*vx*dt - sin(psiOdom)*vy*dt;
-      double yOdom = yOdomEst_ + sin(psiOdom)*vx*dt + cos(psiOdom)*vy*dt;
+      double psiOdom = psiOdomEst_ + vpsiLocal*dt;
+      double xOdom = xOdomEst_ + cos(psiOdom)*vxLocal*dt - sin(psiOdom)*vyLocal*dt;
+      double yOdom = yOdomEst_ + sin(psiOdom)*vxLocal*dt + cos(psiOdom)*vyLocal*dt;
 
       // Publish Odometry Transform
       geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(psiOdom);
@@ -321,7 +328,6 @@ public:
       odom_trans.transform.translation.y = yOdom;
       odom_trans.transform.translation.z = 0.0;
       odom_trans.transform.rotation = odom_quat;
-      tf::TransformBroadcaster odom_broadcaster;
       odom_broadcaster.sendTransform(odom_trans);
 
       // Set Final Planar Pose
@@ -335,12 +341,12 @@ public:
 
       // Set Final Planar Velocity
       odomMsg.child_frame_id = "/base_link";
-      odomMsg.twist.twist.linear.x = vx;
-      odomMsg.twist.twist.linear.y = vy;
+      odomMsg.twist.twist.linear.x = vxLocal;
+      odomMsg.twist.twist.linear.y = vyLocal;
       odomMsg.twist.twist.linear.z = 0.0;
       odomMsg.twist.twist.angular.x = 0.0;
       odomMsg.twist.twist.angular.y = 0.0;
-      odomMsg.twist.twist.angular.z = vpsi;
+      odomMsg.twist.twist.angular.z = vpsiLocal;
 
       // Publish Odometry Message
       odom_pub_.publish(odomMsg);
@@ -357,7 +363,7 @@ public:
       // Display Data
       if (displayData==1) {
         std::cout << "Estimated Pose:" << endl << "x: " << xOdom << endl << "y: " << yOdom << endl << "psi: " << psiOdom << endl << endl;
-        // std::cout << "Estimated Velocity:" << endl << "vx: " << vx << endl << "vy: " << vy << endl << "vpsi: " << vpsi << endl << endl;
+        // std::cout << "Estimated Velocity:" << endl << "vxLocal: " << vx << endl << "vyLocal: " << vy << endl << "vpsiLocal: " << vpsi << endl << endl;
       }
 
     }

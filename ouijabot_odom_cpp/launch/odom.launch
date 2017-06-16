@@ -10,7 +10,6 @@
 	<!-- ========== JOY ========== -->
   <node name="joy_node" pkg="joy" type="joy_node" output="screen">
   </node>
-
   <!-- ========== OUIJABOT TELEOP ========== -->
   <node name="telop" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
     <remap from="vel_out" to="/ouijabot1/cmd_vel" /> <!-- change the index of the robot here -->
@@ -31,11 +30,11 @@
   </node>
   <!-- ========== LINK BETWEEN ODOMETRY GROUND TRUTH AND WORLD WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_gt"
-    args="0 0 0 0 0 0 /world /odom_gt_frame 10">
+    args="0 0 0 0 0 0 /world /odom_gt_frame 100">
   </node>
   <!-- ========== LINK BETWEEN ODOMETRY ESTIMATOIN AND WORLD WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom"
-    args="0 0 0 0 0 0 /world /odom_frame 10">
+    args="0 0 0 0 0 0 /world /odom_frame 100">
   </node>
 
   <!-- ========== RVIZ ========== -->
@@ -44,7 +43,7 @@
   </node>
   <!-- ========== LINK BETWEEN MOCAP_OPTITRACK WORLD AND RVIZ WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_rviz_world"
-    args="0 0 0 1.5708 0 3.1415 /world_rviz /world 10">
+    args="0 0 0 1.5708 0 3.1415 /world_rviz /world 100">
   </node>
 
 </launch>
