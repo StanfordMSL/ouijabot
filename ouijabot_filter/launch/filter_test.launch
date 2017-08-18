@@ -1,18 +1,21 @@
 <launch>
 
-  <!-- ========== MOCAP_OPTITRACK ========== -->
-  <arg name="mocap_config_file"
-    default="$(find mocap_interface)/config/mocap.yaml" />
-  <node pkg="mocap_optitrack" type="mocap_node" name="mocap_node" respawn="false" launch-prefix="" required="true" output="screen">
-    <rosparam file="$(arg mocap_config_file)" command="load" />
-  </node>
+  <!-- ========== PLAYING ROSBAG FILES ========== -->
+  <arg name="playback_speed" default="0.5" />
+  <arg name="path" default="/home/ericcristofalo/Documents/Research/DfF/20170817_ouijabot_testing/" />
+  <arg name="file" default="2017-08-17-16-39-48" />
+  <node pkg="rosbag" type="play" name="bag_player" output="screen" args="--clock -q -r $(arg playback_speed) $(arg path)$(arg file).bag"/>
 
-	<!-- ========== JOY ========== -->
-  <node name="joy_node" pkg="joy" type="joy_node" output="screen">
-  </node>
-  <!-- ========== OUIJABOT TELEOP ========== -->
-  <node name="telop" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
-    <remap from="vel_out" to="/ouijabot1/cmd_vel" /> <!-- change the index of the robot here -->
+  <!-- ========== MOCAP_INTERFACE_ODOM ========== -->
+  <node name="mocap_interface_odom" pkg="mocap_interface" type="mocap_interface_odom" respawn="false" launch-prefix="" required="true" output="screen">
+    <remap from="/robot/pose" to="/robot_1/pose"/>
+    <remap from="/robot/odom" to="/robot_1/odom"/>
+    <remap from="/robot/accel" to="/robot_1/accel"/>
+    <param name="DISPLAY_DATA_BOOL" type="int" value="0" />
+    <param name="POSITION_COVARIANCE" type="double" value="0.0" />
+    <param name="ORIENTATION_COVARIANCE" type="double" value="0.0" />
+    <param name="VELOCITY_COVARIANCE" type="double" value="0.0" />
+    <param name="ROTATION_RATE_COVARIANCE" type="double" value="0.0" />
   </node>
 
   <!-- ========== OUIJABOT ODOMETRY ========== -->
@@ -52,5 +55,25 @@
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_rviz_world"
     args="0 0 0 1.5708 0 3.1415 /world_rviz /world 100">
   </node>
+
+  <!-- ========== RQT PLOT COMPARISON ========== -->
+  <node pkg="rqt_plot" type="rqt_plot" name="plot_position" output="screen" 
+    args="
+      $(arg rob_name)/vision_estimate_gt/pose/pose/position/x:y:z
+      $(arg rob_name)/vision_estimate/pose/pose/position/x:y:z 
+    "
+  />
+  <node pkg="rqt_plot" type="rqt_plot" name="plot_velocity" output="screen" 
+    args="
+      $(arg rob_name)/vision_estimate_gt/twist/twist/linear/x:y:z
+      $(arg rob_name)/vision_estimate/twist/twist/linear/x:y:z 
+    "
+  />
+  <node pkg="rqt_plot" type="rqt_plot" name="plot_acceleration" output="screen" 
+    args="
+      $(arg rob_name)/vision_estimate_gt/twist/twist/linear/x:y:z
+      $(arg rob_name)/vision_estimate/twist/twist/linear/x:y:z 
+    "
+  />
 
 </launch>

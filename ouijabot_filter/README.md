@@ -12,6 +12,7 @@ Tested on: ROS Kinetic
 # Required ROS Packages:
 * mocap_optitrack
 * mocap_interface
+* rviz
 * rqt
 * ouijabot_telop_cpp
 
@@ -26,12 +27,18 @@ This package contains an node that estimates the pose and odometry of the Ouijab
     * Publishes ground truth odometry from Optitrack and estimated odometry from Ouijabot sensor data 
     * DISPLAY_DATA_BOOL: integer indicator for printing data during testing (1 displays data)
     * USE_OPTITRACK_BOOL: integer indicator for dusing motion capture data into odometry estimate (not yet functional)
+		* WHEEL_RADIUS
+		* BODY_RADIUS
     * POS_COVARIANCE: double for position covariance
     * ORIENT_COVARIANCE: double for orientation covariance
     * VEL_COVARIANCE: double for velocity covariance
     * ROT_RATE_COVARIANCE: double for rotation rate covariance
     * ACCEL_COVARIANCE: double for acceleration covariance
     * ROT_ACCEL_COVARIANCE: double for rotation acceleration covariance
+		* WHEEL_MEASUREMENT_COVARIANCE
+		* GYRO_MEASUREMENT_COVARIANCE
+		* ACCEL_MEASUREMENT_COVARIANCE
+
 * filter.launch
-    * ROS launch file that launches the mocap_optitrack, rviz, and odom nodes simulaneously. The ground truth and odometry estimates are visualized in RViz. 
+    * ROS launch file that launches the mocap_optitrack, rviz, rqt, and filter nodes simulaneously. The ground truth and odometry estimates are visualized in RViz. The state estimate is plotted against the ground truth using rqt. 
 

@@ -43,11 +43,9 @@ class filterClass {
   // ros::Subscriber ground_truth_sub_;
   // ros::Subscriber ground_truth_accel_sub_;
 
-  ros::Publisher odom_ground_truth_pub_;
-  ros::Publisher odom_pub_;
-
-  tf::TransformBroadcaster odom_ground_truth_broadcaster;
-  tf::TransformBroadcaster odom_broadcaster;
+  ros::Publisher state_estimate_pub_;
+  tf::TransformBroadcaster state_estimate_broadcaster;
+  nav_msgs::Odometry stateEstimateMsg;
   
   // Initialize Input Variables
   int displayData, useOptitrack;
@@ -79,7 +77,7 @@ public:
     // ground_truth_acc_sub_ = nh_.subscribe("/robot/accel", 10, &filterClass::mocapCallback, this);
 
     // Publish Odometry Message of State Estimate
-    odom_pub_ = nh_.advertise<nav_msgs::Odometry>("/robot/state_estimate", 10);
+    state_estimate_pub_ = nh_.advertise<nav_msgs::Odometry>("/robot/state_estimate", 10);
 
     // Initialize Variables
     displayData = in_01;
@@ -254,13 +252,66 @@ public:
       Sigma = Sigma_;
     }
 
-    if ( displayData ) {
-      // End Timer
-      // double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-      // cout << "EKF period: " << duration << endl;
-      // cout << "Inside Filter Prediction: " << endl << state_ << endl;
-      // cout << "Inside Filter Update: " << endl << state << endl;
+    ros::Time pubTime = ros::Time::now();
+    // Publish State Estimate Message
+    // Publish Odometry Transform
+    geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(state(2));
+    geometry_msgs::TransformStamped odom_trans;
+    odom_trans.header.stamp = pubTime;
+    odom_trans.header.frame_id = "/odom_frame";
+    odom_trans.child_frame_id = "/base_link";
+    odom_trans.transform.translation.x = state(0);
+    odom_trans.transform.translation.y = state(1);
+    odom_trans.transform.translation.z = 0.0;
+    odom_trans.transform.rotation = odom_quat;
+    state_estimate_broadcaster.sendTransform(odom_trans);
+    // ros::Duration(0.5).sleep(); // sleep for half a second
+    // Set Final Pose
+    stateEstimateMsg.header.stamp = pubTime;
+    stateEstimateMsg.header.frame_id = "/world";
+    stateEstimateMsg.pose.pose.position.x = state(0);
+    stateEstimateMsg.pose.pose.position.y = state(1);
+    stateEstimateMsg.pose.pose.position.z = 0.0;
+    stateEstimateMsg.pose.pose.orientation = odom_quat;
+    // Set Final Pose Covariance
+    stateEstimateMsg.pose.covariance[0] = Sigma(0,0);
+    stateEstimateMsg.pose.covariance[1] = Sigma(1,1);
+    stateEstimateMsg.pose.covariance[2] = Sigma(2,2);
+    // Set Final Velocity
+    stateEstimateMsg.child_frame_id = "/base_link";
+    stateEstimateMsg.twist.twist.linear.x = state(3);
+    stateEstimateMsg.twist.twist.linear.y = state(4);
+    stateEstimateMsg.twist.twist.linear.z = 0.0;
+    stateEstimateMsg.twist.twist.angular.x = 0.0;
+    stateEstimateMsg.twist.twist.angular.y = 0.0;
+    stateEstimateMsg.twist.twist.angular.z = state(5);
+        // Set Final Velocity Covariance
+    stateEstimateMsg.twist.covariance[0] = Sigma(3,3);
+    stateEstimateMsg.twist.covariance[1] = Sigma(4,4);
+    stateEstimateMsg.twist.covariance[2] = Sigma(5,5);
+    // Publish Odometry Message
+    state_estimate_pub_.publish(stateEstimateMsg);
+
+    // Display Data in Terminal
+    if (displayData) {
+      // cout << "Prediction: " << endl << x_ << endl;
+      // cout << "Covariance: " << endl << Sigma_(0,0) << endl << Sigma_(1,1) << endl << Sigma_(2,2) << endl << Sigma_(3,3) << endl << Sigma_(4,4) << endl << Sigma_(5,5) << endl;
+      // cout << "Update: " << endl << x << endl;
+      // cout << "Covariance: " << endl << Sigma(0,0) << endl << Sigma(1,1) << endl << Sigma(2,2) << endl << Sigma(3,3) << endl << Sigma(4,4) << endl << Sigma(5,5) << endl;
+      // cout << "------------------------------" << endl;
+      // cout << "Current Robot Ground Truth: " << endl << x_rob_gt << endl;
+      // cout << "Current Opponent Ground Truth: " << endl << x_opp_gt_pub << endl;
+      // cout << "Current Opponent Estimate: " << endl << x_opp_est_pub << endl;
+      // cout << "Ground Truth Measurement: " << endl << y_gt << endl;
+      // cout << "Current Measurement: " << endl << y << endl;
+      // cout << "------------------------------" << endl;
+      // cout << "Relative State Ground Truth: " << endl << x_gt << endl;
+      // cout << "Relative State Estimate:" << endl << x << endl;
+      // cout << "------------------------------" << endl;
     }
+
+    // Update Filter Count
+    count++;
   }
 
   void readMeasurement()
