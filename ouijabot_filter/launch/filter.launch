@@ -16,17 +16,23 @@
   </node>
 
   <!-- ========== OUIJABOT ODOMETRY ========== -->
-  <node name="odom" pkg="ouijabot_odom_cpp" type="odom"  output="screen">
+  <node name="filter" pkg="ouijabot_filter" type="filter"  output="screen">
     <remap from="/robot/pose" to="/robot_1/pose"/>
-    <remap from="/ouijabot/wheel_spd" to="/ouijabot1/wheel_spd"/>
     <remap from="/ouijabot/imu" to="/ouijabot1/imu"/>
-    <remap from="/robot/odom" to="/robot_1/odom"/>
-    <remap from="/robot/odom_gt" to="/robot_1/odom_gt"/>
-    <param name="DISPLAY_DATA_BOOL" type="int" value="0" />
-    <param name="POSITION_COVARIANCE" type="double" value="0.0" />
-    <param name="ORIENTATION_COVARIANCE" type="double" value="0.0" />
-    <param name="VELOCITY_COVARIANCE" type="double" value="0.00001" />
-    <param name="ROTATION_RATE_COVARIANCE" type="double" value="0.00001" />
+    <remap from="/ouijabot/wheel_spd" to="/ouijabot1/wheel_spd"/>
+    <remap from="/robot/state_estimate" to="/robot_1/state_estimate"/>
+    <param name="DISPLAY_DATA_BOOL" type="int" value="1" />
+    <param name="WHEEL_RADIUS" type="double" value="0.025" />
+    <param name="BODY_RADIUS" type="double" value="0.1" />
+    <param name="POS_COVARIANCE" type="double" value="0.1" />
+    <param name="ORIENT_COVARIANCE" type="double" value="0.1" />
+    <param name="VEL_COVARIANCE" type="double" value="0.001" />
+    <param name="ROT_RATE_COVARIANCE" type="double" value="0.001" />
+    <param name="ACCEL_COVARIANCE" type="double" value="0.0001" />
+    <param name="ROT_ACCEL_COVARIANCE" type="double" value="0.0001" />
+    <param name="WHEEL_MEASUREMENT_COVARIANCE" type="double" value="0.1" />
+    <param name="GYRO_MEASUREMENT_COVARIANCE" type="double" value="0.01" />
+    <param name="ACCEL_MEASUREMENT_COVARIANCE" type="double" value="0.01" />
   </node>
   <!-- ========== LINK BETWEEN ODOMETRY GROUND TRUTH AND WORLD WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_gt"

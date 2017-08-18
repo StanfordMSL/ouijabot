@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ouijabot_odom_cpp)
+project(ouijabot_filter)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
 
@@ -124,6 +124,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+# Include Eigen3 Directories
+include_directories ( "/usr/include/eigen3" )
+
 ## Declare a C++ library
 # add_library(ouijabot_telop_cpp
 #   src/${PROJECT_NAME}/ouijabot_telop_cpp.cpp
@@ -194,5 +197,5 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(odom src/odom.cpp)
-target_link_libraries(odom ${catkin_LIBRARIES})
+add_executable(filter src/filter.cpp)
+target_link_libraries(filter ${catkin_LIBRARIES})

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>ouijabot_odom_cpp</name>
+  <name>ouijabot_filter</name>
   <version>0.0.0</version>
-  <description>The ouijabot_odom_cpp package</description>
+  <description>The ouijabot_filter package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
