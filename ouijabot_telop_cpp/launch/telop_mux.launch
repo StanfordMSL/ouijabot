@@ -1,0 +1,12 @@
+<launch>
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+    </node>
+
+    <node name="telop_mux" pkg="ouijabot_telop_cpp" type="telop_mux"  output="screen">
+        <remap from="vel_out1" to="/ouijabot1/cmd_vel" /> <!-- hold button 7 to select -->
+	<remap from="vel_out2" to="/ouijabot2/cmd_vel" /> <!-- hold button 8 to select -->
+	<remap from="vel_out3" to="/ouijabot3/cmd_vel" /> <!-- hold button 9 to select -->
+	<remap from="vel_out4" to="/ouijabot4/cmd_vel" /> <!-- hold button 10 to select -->
+    </node>
+
+</launch>
