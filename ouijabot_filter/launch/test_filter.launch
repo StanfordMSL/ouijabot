@@ -1,0 +1,89 @@
+<!-- 
+ File Name:         test_filter.launch
+ Date Created:      2017/09/05
+ Date Modified:     2017/09/08
+ Author:            Eric Cristofalo
+ Contact:           eric.cristofalo@gmail.com
+ 
+ Description:       ROS launch file for testing the Ouijabot EKF with a rosbag
+                    Ouijabot State: [x, y, psi, v_x, v_y, v_psi, a_x, a_y, a_psi]
+ Links:             frame 1 to frame 2: x,y,x translation followed by z,y,x euler angles in that order
+-->
+
+<launch>
+
+  <arg name="rigid_body" default="rob_1" />
+  <arg name="ouijabot" default="ouijabot1" />
+
+  <!-- ========== PLAYING ROSBAG FILES ========== -->
+  <arg name="playback_speed" default="1.0" />
+  <arg name="path" default="/home/ericcristofalo/Documents/Research/DfF/20170826_ouijabot_testing" />
+  <!-- <arg name="file" default="2017-08-26-16-45-53" /> -->
+  <arg name="file" default="2017-08-26-16-48-18" />
+  <!-- <arg name="file" default="2017-08-26-16-48-54" /> -->
+  <!-- <arg name="file" default="2017-08-26-16-49-29" /> -->
+  <node pkg="rosbag" type="play" name="bag_player" output="screen" args="--clock -q -r $(arg playback_speed) -l $(arg path)/$(arg file).bag"/>
+
+  <!-- ========== GROUND TRUTH ODOMETRY FROM OPTITRACK ========== --> 
+<!--   <node pkg="mocap_interface" type="mocap_interface_odom" name="mocap_interface_odom" respawn="false" launch-prefix="" required="true" output="screen">
+    <remap from="/robot/pose" to="/$(arg rigid_body)/pose"/>
+    <remap from="/robot/odom" to="/$(arg rigid_body)/odom"/>
+    <remap from="/robot/accel" to="/$(arg rigid_body)/accel"/>
+    <param name="display_data_flag" type="int" value="0" />
+    <param name="publish_acceleration" type="int" value="0" />
+    <rosparam param="covariance">[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    </rosparam>
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_"
+    args="0 0 0 0 0 0 /world /odom_frame 100">
+  </node> -->
+
+  <!-- ========== GROUND TRUTH TF FOR VISUALIZATION ========== -->
+  <node name="tf_rebroadcaster" pkg="mocap_interface" type="tf_rebroadcaster" respawn="false" output="screen">
+    <remap from="/robot" to="/$(arg rigid_body)/pose"/> 
+    <param name="display_data_flag" type="int" value="0"/>
+    <param name="input_data_type_index" type="int" value="0"/>
+    <param name="source_frame" type="string" value="/world"/>
+    <param name="destination_frame" type="string" value="/base_link"/>
+  </node>
+
+  <!-- ========== OUIJABOT ODOMETRY FILTER ========== -->
+  <rosparam command="load" ns="filter" file="$(find ouijabot_filter)/param/ouijabot.yaml" />
+  <node name="filter" pkg="ouijabot_filter" type="filter"  output="screen">
+    <remap from="/ouijabot/imu" to="/$(arg ouijabot)/imu"/>
+    <remap from="/ouijabot/wheel_spd" to="/$(arg ouijabot)/wheel_spd"/>
+    <remap from="/robot/state_estimate" to="/$(arg rigid_body)/state_estimate"/>
+    <remap from="/robot/pose" to="/$(arg rigid_body)/pose"/>
+    <param name="display_data_flag" type="int" value="1" />
+    <param name="use_optitrack_flag" type="int" value="1" />
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_est"
+    args="0 0 0 0 0 0 /world /odom_frame_est 100">
+  </node>
+
+  <!-- ========== RVIZ ========== -->
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" 
+    args="-f world_rviz -d $(find ouijabot_filter)/rviz/filter.rviz" required="true">
+  </node>
+  <node pkg="tf" type="static_transform_publisher" name="trans_pub_rviz_world"
+    args="0 0 0 1.5708 0 3.1415 /world_rviz /world 100">
+  </node>
+
+  <!-- ========== RQT PLOT COMPARISON ========== -->
+<!--   <node pkg="rqt_plot" type="rqt_plot" name="plot_position" output="screen" 
+    args="
+      $(arg rob)/odom/pose/pose/position/x:z
+      $(arg rob)/state_estimate/pose/pose/position/x:z 
+    "
+  />
+  <node pkg="rqt_plot" type="rqt_plot" name="plot_velocity" output="screen" 
+    args="
+      $(arg rob)/odom/twist/twist/linear/x:z
+      $(arg rob)/state_estimate/twist/twist/linear/x:z 
+    "
+  /> -->
+
+
+</launch>

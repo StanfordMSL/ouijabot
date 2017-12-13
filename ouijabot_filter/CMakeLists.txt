@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(ouijabot_filter)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=gnu++0x")
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -16,6 +17,12 @@ find_package(catkin REQUIRED COMPONENTS
   ouijabot
   tf
 )
+
+find_package(Eigen3 REQUIRED)
+
+# SET(CMAKE_BUILD_TYPE distribution)
+# SET(CMAKE_CXX_FLAGS_DISTRIBUTION "-O3")
+# SET(CMAKE_C_FLAGS_DISTRIBUTION "-O3")
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -109,7 +116,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ouijabot_telop_cpp
-#  CATKIN_DEPENDS geometry_msgs joy roscpp rospy sensor_msgs std_msgs
+ # CATKIN_DEPENDS geometry_msgs joy roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -121,11 +128,12 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS} 
+  ${EIGEN3_INCLUDE_DIR}
 )
 
 # Include Eigen3 Directories
-include_directories ( "/usr/include/eigen3" )
+# include_directories ( "/usr/include/eigen3" )
 
 ## Declare a C++ library
 # add_library(ouijabot_telop_cpp
@@ -199,3 +207,4 @@ include_directories ( "/usr/include/eigen3" )
 
 add_executable(filter src/filter.cpp)
 target_link_libraries(filter ${catkin_LIBRARIES})
+

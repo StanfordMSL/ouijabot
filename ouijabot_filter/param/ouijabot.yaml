@@ -1,0 +1,25 @@
+#--------------------------------------------------------------------------
+# 
+# File Name:         ouijabot.yaml
+# Date Created:      2017/09/05
+# Date Modified:     2017/09/08
+# 
+# Author:            Eric Cristofalo
+# Contact:           eric.cristofalo@gmail.com
+# 
+# Description:       Configuration file for Ouijabot's filter
+#                    body_radius: radius of Ouijabot robot
+#                    wheel_radius: radius of Ouijabot's wheel
+#                    q_cov: diagonal elements of Q covariance matrix
+#                           [x,y,theta,v_x,v_y,omega,a_x,a_y,a_omega]^T
+#                    r_cov: diagonal elements of R covariance matrix
+#                           [w1, w2, w3, w4, w_gyro, a_x, a_y]^T
+# 
+#-------------------------------------------------------------------------
+body_radius: 0.127 # 0.127m from Zijian's source code
+wheel_radius: 0.03 # 0.03m from Zijian's source code
+q_cov_diag: [0.005, 0.005, 0.001, 0.01, 0.01, 0.001, 0.1, 0.1, 0.01]
+r_cov_diag: [0.001, 0.001, 0.001, 0.001, 0.000001, 1.0, 1.0]
+rotation_robot_local: [0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, -1.0] # Optitrack's rigid body from to robot local frame
+# rotation_robot_local is correct for DARS paper's reference frame. Apparently, that franme is offset by pi about the z-axis for some reason. Need to update this rotation for the final ouijabot_filter package. 
+

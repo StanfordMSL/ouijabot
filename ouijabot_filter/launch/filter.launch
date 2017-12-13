@@ -1,3 +1,14 @@
+<!-- 
+ File Name:         filter.launch
+ Date Created:      2017/09/05
+ Date Modified:     2017/09/05
+ Author:            Eric Cristofalo
+ Contact:           eric.cristofalo@gmail.com
+ 
+ Description:       ROS launch file for Ouijabot EKF
+                    Ouijabot State: [x, y, psi, v_x, v_y, v_psi, a_x, a_y, a_psi]
+-->
+
 <launch>
 
   <!-- ========== MOCAP_OPTITRACK ========== -->
@@ -21,19 +32,19 @@
     <remap from="/ouijabot/imu" to="/ouijabot1/imu"/>
     <remap from="/ouijabot/wheel_spd" to="/ouijabot1/wheel_spd"/>
     <remap from="/robot/state_estimate" to="/robot_1/state_estimate"/>
-    <param name="DISPLAY_DATA_BOOL" type="int" value="1" />
-    <param name="USE_OPTITRACK_DATA" type="int" value="0" />
-    <param name="WHEEL_RADIUS" type="double" value="0.025" />
-    <param name="BODY_RADIUS" type="double" value="0.1" />
-    <param name="POS_COVARIANCE" type="double" value="0.1" />
-    <param name="ORIENT_COVARIANCE" type="double" value="0.1" />
-    <param name="VEL_COVARIANCE" type="double" value="0.001" />
-    <param name="ROT_RATE_COVARIANCE" type="double" value="0.001" />
-    <param name="ACCEL_COVARIANCE" type="double" value="0.0001" />
-    <param name="ROT_ACCEL_COVARIANCE" type="double" value="0.0001" />
-    <param name="WHEEL_MEASUREMENT_COVARIANCE" type="double" value="0.1" />
-    <param name="GYRO_MEASUREMENT_COVARIANCE" type="double" value="0.01" />
-    <param name="ACCEL_MEASUREMENT_COVARIANCE" type="double" value="0.01" />
+    <param name="display_data_flag" type="int" value="1" />
+    <param name="use_optitrack_flag" type="int" value="0" />
+    <param name="wheel_radius" type="double" value="0.025" />
+    <param name="body_radius" type="double" value="0.1" />
+    <param name="pos_covariance" type="double" value="0.1" />
+    <param name="orient_covariance" type="double" value="0.1" />
+    <param name="vel_covariance" type="double" value="0.001" />
+    <param name="rot_rate_covariance" type="double" value="0.001" />
+    <param name="accel_covariance" type="double" value="0.0001" />
+    <param name="ROT_accel_covariance" type="double" value="0.0001" />
+    <param name="wheel_measurement_covariance" type="double" value="0.1" />
+    <param name="gyro_measurement_covariance" type="double" value="0.01" />
+    <param name="accel_measurement_covariance" type="double" value="0.01" />
   </node>
   <!-- ========== LINK BETWEEN ODOMETRY GROUND TRUTH AND WORLD WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_world_odom_gt"
@@ -46,7 +57,7 @@
 
   <!-- ========== RVIZ ========== -->
   <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen" 
-    args="-f world_rviz -d $(find ouijabot_odom_cpp)/rviz/odom_testing.rviz" required="true">
+    args="-f world_rviz -d $(find ouijabot_filter)/rviz/odom_testing.rviz" required="true">
   </node>
   <!-- ========== LINK BETWEEN MOCAP_OPTITRACK WORLD AND RVIZ WORLD ========== -->
   <node pkg="tf" type="static_transform_publisher" name="trans_pub_rviz_world"
