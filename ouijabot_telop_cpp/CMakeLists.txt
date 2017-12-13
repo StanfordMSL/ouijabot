@@ -192,3 +192,6 @@ include_directories(
 
 add_executable(telop src/telop.cpp)
 target_link_libraries(telop ${catkin_LIBRARIES})
+
+add_executable(telop_mux src/telop_mux.cpp)
+target_link_libraries(telop_mux ${catkin_LIBRARIES})
