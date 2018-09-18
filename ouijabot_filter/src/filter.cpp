@@ -279,7 +279,7 @@ public:
     // Somewhat guessing on the transformations for the moment (see negative sign in gyro as well)
     VectorXd state_output = VectorXd::Zero(9);
     state_output.segment(0,2) = -R_rl*state.segment(0,2);
-    state_output(2) = state(2);
+    state_output(2) = -state(2);
     state_output.segment(3,2) = -R_rl*state.segment(3,2);
     state_output(5) = state(5);
     state_output.segment(6,2) = -R_rl*state.segment(6,2);

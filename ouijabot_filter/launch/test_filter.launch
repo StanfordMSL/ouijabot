@@ -16,12 +16,15 @@
   <arg name="ouijabot" default="ouijabot1" />
 
   <!-- ========== PLAYING ROSBAG FILES ========== -->
-  <arg name="playback_speed" default="1.0" />
-  <arg name="path" default="/home/ericcristofalo/Documents/Research/DfF/20170826_ouijabot_testing" />
+  <arg name="playback_speed" default="3.0" />
+<!--   <arg name="path" default="/home/ericcristofalo/Documents/Research/DfF/20170826_ouijabot_testing" /> -->
+  <arg name="path" default="/home/ericcristofalo/Documents/Research" />
   <!-- <arg name="file" default="2017-08-26-16-45-53" /> -->
-  <arg name="file" default="2017-08-26-16-48-18" />
+  <!-- <arg name="file" default="2017-08-26-16-48-18" /> -->
   <!-- <arg name="file" default="2017-08-26-16-48-54" /> -->
   <!-- <arg name="file" default="2017-08-26-16-49-29" /> -->
+  <arg name="file" default="erics_test_dataset" />
+  <param name="use_sim_time" value="true"/>
   <node pkg="rosbag" type="play" name="bag_player" output="screen" args="--clock -q -r $(arg playback_speed) -l $(arg path)/$(arg file).bag"/>
 
   <!-- ========== GROUND TRUTH ODOMETRY FROM OPTITRACK ========== --> 
