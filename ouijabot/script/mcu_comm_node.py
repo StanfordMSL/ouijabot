@@ -3,11 +3,8 @@
 ### The MIT License (MIT)
 ### Copyright (c) 2015 Zijian Wang
 
-import rospy
-import std_msgs.msg 
+#std lib imports 
 import serial
-from time import sleep
-from WrapMsg import *
 import math
 import signal # for catching keyboard interrupt ctrl+c
 import sys
@@ -15,6 +12,8 @@ import time
 #numpy not installed 
 
 # Standard ROS message
+import rospy
+import std_msgs.msg 
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu
 
@@ -23,6 +22,9 @@ from ouijabot.msg import Wheel_Spd # custom ROS msg for wheel spd (4 floats)
 from ouijabot.msg import Current # custom ROS msg for motor current (4 floats)
 from ouijabot.srv import Enable_IMU # enable uploading IMU measurement
 from ouijabot.srv import Enable_Current # enable uploading current measurement
+
+#custom wrapper for serial messages
+from WrapMsg import *
 
 class Ouijabot(object):
     """docstring for Ouijabot"""
@@ -74,21 +76,21 @@ class Ouijabot(object):
         Input: feed_stream is the new received data from the serial port
         Output: publish corresponding data through ROS
         ''' 
-        if not hasattr(Sensor_Msg_Handler, "prev_stream_left_over"):
-            Sensor_Msg_Handler.prev_stream_left_over = ""  # add an attribute to the function (equivalent to static var in C)
+        if not hasattr(sensor_msg_handler, "prev_stream_left_over"):
+            sensor_msg_handler.prev_stream_left_over = ""  # add an attribute to the function (equivalent to static var in C)
         # combine the stream left over previously to the new stream 
-        stream = Sensor_Msg_Handler.prev_stream_left_over + feed_stream
+        stream = sensor_msg_handler.prev_stream_left_over + feed_stream
 
         # check the existence of packet head @
         if '@' not in stream:
-            Sensor_Msg_Handler.prev_stream_left_over = stream
+            sensor_msg_handler.prev_stream_left_over = stream
             #print "no @ in stream"
             return
         while '@' in stream:
             # locate the first head, discard all the information before the head
             head_idx = stream.index('@')
             if len(stream[head_idx: ]) < 2: # @ is the last byte
-                Sensor_Msg_Handler.prev_stream_left_over = stream[head_idx: ]
+                sensor_msg_handler.prev_stream_left_over = stream[head_idx: ]
                 print "stream trancated: @ is the last byte"
                 return  
             data_len = 24; # initialize this var
@@ -104,13 +106,13 @@ class Ouijabot(object):
             # Reserve for more types
             #
             else: # unknown type, discard the whole package
-                Sensor_Msg_Handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
+                sensor_msg_handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
                 print "unknown sensor packet type"
                 return
             if len(stream[head_idx+2:-1]) < data_len: # haven't yet received the full packet
-                Sensor_Msg_Handler.prev_stream_left_over = stream[head_idx: ]
+                sensor_msg_handler.prev_stream_left_over = stream[head_idx: ]
                 #print "stream trancated: haven't yet received the full packet", stream
-                #print "left:", Sensor_Msg_Handler.prev_stream_left_over
+                #print "left:", sensor_msg_handler.prev_stream_left_over
                 return
 
             ### Retrieve data
@@ -122,7 +124,7 @@ class Ouijabot(object):
             if checksum != ord(stream[head_idx+2+data_len]):
                 print "[Warning] checksum unmatch in sensor message"
                 rospy.logwarn("[Warning] checksum unmatch in sensor message")
-                Sensor_Msg_Handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
+                sensor_msg_handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
                 return
             # checksum matched, extract every kind of sensor message
             if stream[head_idx+1] == 'A': # Wheel_Spd, format: "@+type+s1+s2+s3+s4+checksum"
@@ -203,7 +205,7 @@ class Ouijabot(object):
             # Reserve for more types
             #
 
-        Sensor_Msg_Handler.prev_stream_left_over = stream  # update the stream_left_over after the while loop
+        sensor_msg_handler.prev_stream_left_over = stream  # update the stream_left_over after the while loop
                         
     # enable_imu service
     def service_enable_imu(self, req):
@@ -270,7 +272,7 @@ class Ouijabot(object):
 
     def read_serial(self):
         #checking for inbound mesasgs and handles them
-        if self.ser.inWaiting() > 0:
+        if n=self.ser.inWaiting() > 0:
             self.sensor_msg_handler(self.ser.read(n));
 
     def stop_bot(self):
@@ -293,12 +295,20 @@ class Ouijabot(object):
 
 
 if __name__ == '__main__':
-        bot = Ouijabot()
+        try:
+            bot = Ouijabot()
+        except serlal.SerialException as e:
+            print(e)
+            rospy.logerr("FATAL: Failure to establish seiral communication")
+            raise 
+
         try:
             bot.run()
         except rospy.ROSInterruptException as e:
-            print(e)
+            #stop the robot because we're in the danger zone
             bot.stop_bot()
+            print(e)
+            raise
 
 
 

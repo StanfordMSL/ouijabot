@@ -5,7 +5,7 @@
     </node>
 
     <node name="telop1" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
-        <remap from="vel_out" to="/ouijabot3/cmd_vel" /> <!-- change the index of the robot here -->
+        <remap from="vel_out" to="/ouijabot1/cmd_vel" /> <!-- change the index of the robot here -->
     </node>
     <!--node name="telop2" pkg="ouijabot_telop_cpp" type="telop" output="screen">
         <remap from="vel_out" to="/ouijabot1/cmd_vel" />
