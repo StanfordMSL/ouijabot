@@ -30,7 +30,7 @@ class Ouijabot(object):
     """docstring for Ouijabot"""
     def __init__(self):
         #main serial comm
-        self.ser = serial.serial('/dev/ttyAMA0',115200)  
+        self.ser = serial.Serial('/dev/ttyAMA0',115200)  
         #ros node
         rospy.init_node('ouijabot', anonymous=True)
 
@@ -53,8 +53,8 @@ class Ouijabot(object):
 
 
         #srv
-        rospy.service('enable_imu', Enable_IMU, self.service_enable_imu)
-        rospy.service('enable_current', Enable_Current, self.service_enable_current)
+        rospy.Service('enable_imu', Enable_IMU, self.service_enable_imu)
+        rospy.Service('enable_current', Enable_Current, self.service_enable_current)
 
 
         #clean 
