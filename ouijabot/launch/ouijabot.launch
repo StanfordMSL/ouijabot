@@ -1,13 +1,10 @@
 <launch>
-<!--	<env name="ROS_MASTER_URI" value="http://msl-Lenovo:11311" />    -->
-	
-	<group ns="ouijabot0" >
-		<node name="mcu_comm" pkg="ouijabot" type="mcu_comm_node.py" output="screen">
+    <group ns="ouijabot0" >
+        <node name="mcu_comm" pkg="ouijabot" type="mcu_comm_node.py" output="screen">
             <param name="maxDelay" value=".5"/>
             <param name="maxVel" value="3"/>
             <param name="readFrq" value="1000"/>
             <param name="writeFrq" value="50"/>
-		</node>
-	</group>
-
+        </node>
+    </group>
 </launch>

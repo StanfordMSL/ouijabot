@@ -272,43 +272,43 @@ class Ouijabot(object):
 
     def read_serial(self):
         #checking for inbound mesasgs and handles them
-        if n=self.ser.inWaiting() > 0:
+        n=self.ser.inWaiting()
+        if n > 0:
             self.sensor_msg_handler(self.ser.read(n));
 
     def stop_bot(self):
         #stops the robot 
         self.ser.write(Wrap_Msg_A(0.0, 0.0, 0.0))
 
-    def run(self)
-    cmdRate = rospy.rate(self.writeFrq)
-    while not rospy.is_shutdown():
-        if (time.time()- self.cmdTime)>self.maxDelay:
-            #if exceeds the delay stop robot 
-            self.stop_bot()
-        else:
-        #serial out velocity cmd
-            self.ser.write(Wrap_Msg_A(self.vel_mag, self.vel_dir, self.omega))
-        cmdRate.sleep()
+    def run(self):
+        cmdRate = rospy.rate(self.writeFrq)
+        while not rospy.is_shutdown():
+            if (time.time()- self.cmdTime)>self.maxDelay:
+                #if exceeds the delay stop robot 
+                self.stop_bot()
+            else:
+            #serial out velocity cmd
+                self.ser.write(Wrap_Msg_A(self.vel_mag, self.vel_dir, self.omega))
+            cmdRate.sleep()
 
 
 
 
 
 if __name__ == '__main__':
-        try:
-            bot = Ouijabot()
-        except serlal.SerialException as e:
-            print(e)
-            rospy.logerr("FATAL: Failure to establish seiral communication")
-            raise 
 
-        try:
-            bot.run()
-        except rospy.ROSInterruptException as e:
-            #stop the robot because we're in the danger zone
-            bot.stop_bot()
-            print(e)
-            raise
+    try:
+        bot = Ouijabot()
+        bot.run()
+    except serial.SerialException as e:
+        rospy.logerr("FATAL: Failure to establish seiral communication")
+        raise e
+
+    except rospy.ROSInterruptException as e:
+        #stop the robot because we're in the danger zone
+        bot.stop_bot()
+        rospy.logwarn("Ouijabot shuting down")
+        raise e #run a shutdown method TODO
 
 
 
