@@ -39,6 +39,14 @@ class Ouijabot(object):
         self.maxVel= rospy.get_param('~maxVel')
         self.readFrq= rospy.get_param('~readFrq')
         self.writeFrq= rospy.get_param('~writeFrq')
+        self.prev_stream_left_over = "" 
+
+
+        #intialize velocity and time
+        self.vel_mag = 0.0
+        self.vel_dir = 0.0
+        self.omega = 0.0
+        self.cmdTime = time.time()
 
         #pub 
         self.pub_wheel_spd = rospy.Publisher('wheel_spd', Wheel_Spd, queue_size=15)
@@ -49,7 +57,7 @@ class Ouijabot(object):
         rospy.Subscriber("cmd_vel", Twist, self.cmd_vel_callback)
 
         #timers
-        self.read_timer = rospy.Timer(1./self.readFrq, self.read_serial)
+        self.read_timer = rospy.Timer(rospy.Duration(1./self.readFrq), self.read_serial)
 
 
         #srv
@@ -75,22 +83,22 @@ class Ouijabot(object):
         Extract the sensor message sent by the PCB. 
         Input: feed_stream is the new received data from the serial port
         Output: publish corresponding data through ROS
-        ''' 
-        if not hasattr(sensor_msg_handler, "prev_stream_left_over"):
-            sensor_msg_handler.prev_stream_left_over = ""  # add an attribute to the function (equivalent to static var in C)
+        # ''' 
+        # if not self.prev_stream_left_over:
+        #     self.prev_stream_left_over = ""  # add an attribute to the function (equivalent to static var in C)
         # combine the stream left over previously to the new stream 
-        stream = sensor_msg_handler.prev_stream_left_over + feed_stream
+        stream = self.prev_stream_left_over + feed_stream
 
         # check the existence of packet head @
         if '@' not in stream:
-            sensor_msg_handler.prev_stream_left_over = stream
+            self.prev_stream_left_over = stream
             #print "no @ in stream"
             return
         while '@' in stream:
             # locate the first head, discard all the information before the head
             head_idx = stream.index('@')
             if len(stream[head_idx: ]) < 2: # @ is the last byte
-                sensor_msg_handler.prev_stream_left_over = stream[head_idx: ]
+                self.prev_stream_left_over = stream[head_idx: ]
                 print "stream trancated: @ is the last byte"
                 return  
             data_len = 24; # initialize this var
@@ -106,13 +114,13 @@ class Ouijabot(object):
             # Reserve for more types
             #
             else: # unknown type, discard the whole package
-                sensor_msg_handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
+                self.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
                 print "unknown sensor packet type"
                 return
             if len(stream[head_idx+2:-1]) < data_len: # haven't yet received the full packet
-                sensor_msg_handler.prev_stream_left_over = stream[head_idx: ]
+                self.prev_stream_left_over = stream[head_idx: ]
                 #print "stream trancated: haven't yet received the full packet", stream
-                #print "left:", sensor_msg_handler.prev_stream_left_over
+                #print "left:", self.prev_stream_left_over
                 return
 
             ### Retrieve data
@@ -124,7 +132,7 @@ class Ouijabot(object):
             if checksum != ord(stream[head_idx+2+data_len]):
                 print "[Warning] checksum unmatch in sensor message"
                 rospy.logwarn("[Warning] checksum unmatch in sensor message")
-                sensor_msg_handler.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
+                self.prev_stream_left_over = stream[head_idx+1: ] # remove the '@' of packet is equivalent to discard this entire wrong packet
                 return
             # checksum matched, extract every kind of sensor message
             if stream[head_idx+1] == 'A': # Wheel_Spd, format: "@+type+s1+s2+s3+s4+checksum"
@@ -205,7 +213,7 @@ class Ouijabot(object):
             # Reserve for more types
             #
 
-        sensor_msg_handler.prev_stream_left_over = stream  # update the stream_left_over after the while loop
+        self.prev_stream_left_over = stream  # update the stream_left_over after the while loop
                         
     # enable_imu service
     def service_enable_imu(self, req):
@@ -264,13 +272,13 @@ class Ouijabot(object):
 
         #repackage output information
         self.vel_mag = min(self.maxVel, math.sqrt(vx*vx + vy*vy))
-        self.vel_dir = get_vec_ang((vx, vy))
+        self.vel_dir = self.get_vec_ang((vx, vy))
         self.omega = data.angular.z
         self.cmdTime = time.time()
         # print vel_mag, vel_dir, omega
         #self.ser.write(Wrap_Msg_A(vel_mag, vel_dir, omega))
 
-    def read_serial(self):
+    def read_serial(self, event):
         #checking for inbound mesasgs and handles them
         n=self.ser.inWaiting()
         if n > 0:
@@ -281,7 +289,7 @@ class Ouijabot(object):
         self.ser.write(Wrap_Msg_A(0.0, 0.0, 0.0))
 
     def run(self):
-        cmdRate = rospy.rate(self.writeFrq)
+        cmdRate = rospy.Rate(self.writeFrq)
         while not rospy.is_shutdown():
             if (time.time()- self.cmdTime)>self.maxDelay:
                 #if exceeds the delay stop robot 
@@ -304,9 +312,8 @@ if __name__ == '__main__':
         rospy.logerr("FATAL: Failure to establish seiral communication")
         raise e
 
-    except rospy.ROSInterruptException as e:
+    except rospy.ROSException as e:
         #stop the robot because we're in the danger zone
-        bot.stop_bot()
         rospy.logwarn("Ouijabot shuting down")
         raise e #run a shutdown method TODO
 
