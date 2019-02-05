@@ -1,11 +1,12 @@
 <launch>
     <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="deadzone" value=".15" />
     </node>
 
     <node name="telop1" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
-        <remap from="vel_out" to="/ouijabot4/cmd_vel" /> <!-- change the index of the robot here -->
+        <remap from="vel_out" to="/ouijabot0/cmd_vel" /> <!-- change the index of the robot here -->
     </node>
-
     <!--node name="telop2" pkg="ouijabot_telop_cpp" type="telop" output="screen">
         <remap from="vel_out" to="/ouijabot1/cmd_vel" />
     </node-->
