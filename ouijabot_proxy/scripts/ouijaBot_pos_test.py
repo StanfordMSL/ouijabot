@@ -24,10 +24,12 @@ from ouijabot.msg import Current # custom ROS msg for motor current (4 floats)
 from ouijabot.srv import Enable_IMU # enable uploading IMU measurement
 from ouijabot.srv import Enable_Current # enable uploading current measurement
 
-from ouijabotProxy import OuijabotProxy as Prox
+#custom ROSS clases 
+
+from ouijabot_proxy.ouijabotProxy import OuijabotProxy as Prox
 
 
-def dance(bot):
+def posTest(bot):
     goals = [(0, 0, 0),
              (3, 1, np.pi),
              (3, -1, 0),
@@ -68,7 +70,7 @@ if __name__ == '__main__':
         readInput = raw_input("enter x to start: ")
     ouijabotTest.setEnable(True)
 
-    testPosition(ouijabotTest)
+    posTest(ouijabotTest)
     #testVelocity(ouijabotTest)
 
 

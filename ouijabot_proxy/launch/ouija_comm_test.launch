@@ -13,6 +13,8 @@
 		</node>
 	</group>
 
+
+	<!-- replace this with non ETH vrpn -->
 	<include file="$(find ouijabot_proxy)/launch/vrpn.launch">
 		<arg name="robot_ns" value="$(arg robot_type)$(arg id)" />
 		<arg name="vrpn_name" value="$(arg robot_type)$(arg id)"/>
