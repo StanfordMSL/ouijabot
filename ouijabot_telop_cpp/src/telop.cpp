@@ -16,7 +16,7 @@ private:
 
 
   //timer assets 
-  double controlLoopFreq_; // frequency for control loop
+  double controlLoopFreq; // frequency for control loop
   ros::Timer controlTimer_;
   void controlTimerCB(const ros::TimerEvent& event);
 
