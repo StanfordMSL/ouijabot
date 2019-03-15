@@ -65,8 +65,8 @@ if __name__ == '__main__':
     This tests the ouijabot proxy class for high level control
     this will simply move the ouibot around a series of waypoints"""
     rospy.init_node('ouijabot_pos_test', anonymous=True)
-    ID = str(rospy.get_param('~id')) #getting ID
-    ouijabotTest = Prox("/vrpn_client_node/ouijabot"+ID+"/pose", "cmd_vel")
+    ouijabotTest = OuijabotProxy(rospy.get_param('~poseTopic'), 
+                                 rospy.get_param('~velTopic'))
 
     readInput = ""
     while readInput != "x":

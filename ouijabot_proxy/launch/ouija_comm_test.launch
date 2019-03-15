@@ -4,10 +4,10 @@
 	<arg name="robot_type" default="ouijabot"/>
 	<arg name="id" default="1"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
 	
-	<include file="$(find vrpn_client_ros)/launch/sample.launch"/>
-
 	<group ns="$(arg robot_type)$(arg id)">
 		<node name="ouijabotTest" pkg="ouijabot_proxy" type="ouijabotProxy.py" output="screen">
+			<param name="poseTopic" value="/vrpn_client_node/$(arg robot_type)$(arg id)/pose"/> 
+            <param name="velTopic" value="cmd_vel"/>
 			<param name="velMax_l" value=".5" />
 			<param name="velMax_a" value=".2" />
 			<param name="cmdFrq" value="20" />

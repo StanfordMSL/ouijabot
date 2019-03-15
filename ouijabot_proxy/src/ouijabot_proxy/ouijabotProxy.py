@@ -78,9 +78,9 @@ class OuijabotProxy(object):
         while self.pose is None:
             #wait for pose 
             rospy.loginfo("Attempting to Establish Position Lock")
-            rospy.sleep(.1)
+            rospy.sleep(1)
             counter +=1
-            if counter > 10:
+            if counter > 5:
                 raise RuntimeError("Position Lock Failure")
 
         rospy.loginfo("Ouijabot Position Established")
@@ -285,8 +285,8 @@ if __name__ == '__main__':
     This tests the ouijabot proxy class for high level control
     this will simply move the robot around to test each directon"""
     rospy.init_node('ouijabotProxy', anonymous=True)
-    ID = str(rospy.get_param('~id')) #getting ID
-    ouijabotTest = OuijabotProxy("/vrpn_client_node/ouijabot"+ID+"/pose", "cmd_vel")
+    ouijabotTest = OuijabotProxy(rospy.get_param('~poseTopic'), 
+                                 rospy.get_param('~velTopic'))
     readInput = ""
     while readInput != "x":
         readInput = raw_input("enter x to start: ")
