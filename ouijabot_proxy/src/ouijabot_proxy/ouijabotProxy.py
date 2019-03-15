@@ -59,6 +59,7 @@ class OuijabotProxy(object):
             self.cmdFrq= params['cmdFrq']
             self.ID = params['ID']
 
+        self.modes = ['vel', 'pos']
         self.mode =mode 
 
         #pub 
@@ -73,10 +74,14 @@ class OuijabotProxy(object):
         self.twistCmd = Twist()
         self.enable = False
 
+        counter = 0 
         while self.pose is None:
             #wait for pose 
             rospy.loginfo("Attempting to Establish Position Lock")
             rospy.sleep(.1)
+            counter +=1
+            if counter > 10:
+                raise RuntimeError("Position Lock Failure")
 
         rospy.loginfo("Ouijabot Position Established")
 
@@ -84,11 +89,19 @@ class OuijabotProxy(object):
         #timers
         self.controlTimer = rospy.Timer(rospy.Duration(1./self.cmdFrq), self.controlLoop)
 
+        rospy.loginfo("Ouijabot Initialization Exited Successfully: Clear for Launch")
 
     # call back from optirack data
     def poseCB(self, msg):
         #get pose form topic 
         self.pose=msg.pose
+
+    def setMode(self, mode):
+        if mode not in self.modes:
+            self.stop()
+            self.enable=False
+            raise RuntimeError("mode not found. terminating")
+        self.mode= mode
 
     def getPose(self, full=False):
         #return the pose of the robot, if full = True return the full Pose message struct 
@@ -255,10 +268,9 @@ def testVelocity(bot):
           (0, 0, -.05 )]
     times= [1, 1, 1, 1, 1, 1 ]
 
-    for vel, timz in zip(vels, times):
-        print vel
+    for vel, t in zip(vels, times):
         startTime = time.time()
-        while (time.time()- startTime)< timz:
+        while (time.time()- startTime)< t:
             bot.setVelocityTarget(vel,  frame ='W')
             position = bot.getPose()
             velocity = bot.getVelocityTarget()
@@ -267,55 +279,19 @@ def testVelocity(bot):
             time.sleep(.5)     
     return 0
 
-def testPosition(bot):
-    goals = [(-3, 1, 0),
-             (3, 1, np.pi),
-             (4, 0, 0), 
-             (3, -1, np.pi),
-             (-3,-1, 0),
-             (-4, 0, np.pi)]
-
-    shift = bot.ID-1
-    print shift
-
-    #lazy scamble 
-    goalsShifted = goals[shift:] + goals[:shift]
-    #goals = [(-3, 2, 0*np.pi)]
-    
-    for goal in goalsShifted:
-        bot.setPoseTarget(goal)
-        goalDist = bot.getPoseTargetDist()
-        while (goalDist> .1):
-            position = bot.getPose()
-            velocity = bot.getVelocityTarget()
-            goalDist = bot.getPoseTargetDist()
-            print("\ncurrent pose: {:2.4f}, {:2.4f}; {:2.4f} ".format(position[0],position[1], position[2]))
-            print("cmd velocity: {:2.4f}, {:2.4f}; {:2.4f} ".format(velocity[0],velocity[1], velocity[2]))
-            print("dist from goal {:2.4f}".format(goalDist))
-            rospy.sleep(1)
-
-
-        print("goal reached: ")
-        print(goal)
-        rospy.sleep(.5)
-    return 0
-
-
-
-
    
 if __name__ == '__main__':
     """
     This tests the ouijabot proxy class for high level control
-    this will simply move the ouibot around a series of waypoints"""
+    this will simply move the robot around to test each directon"""
     rospy.init_node('ouijabotProxy', anonymous=True)
-    ouijabotTest = OuijabotProxy("raw/pose", "cmd_vel")
+    ID = str(rospy.get_param('~id')) #getting ID
+    ouijabotTest = OuijabotProxy("/vrpn_client_node/ouijabot"+ID+"/pose", "cmd_vel")
     readInput = ""
     while readInput != "x":
         readInput = raw_input("enter x to start: ")
     ouijabotTest.setEnable(True)
 
-    #testPosition(ouijabotTest)
     testVelocity(ouijabotTest)
 
 

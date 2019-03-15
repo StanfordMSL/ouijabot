@@ -2,20 +2,16 @@
 	<!-- launches a oujiabot with local VRPN client -->
 	
 	<arg name="robot_type" default="ouijabot"/>
-	<arg name="id" default="2"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
+	<arg name="id" default="1"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
+
+	<include file="$(find vrpn_client_ros)/launch/sample.launch"/>
 
 	<group ns="$(arg robot_type)$(arg id)">
-		<node name="ouijabotTest" pkg="grape_ros" type="ouijabotProxy.py" output="screen">
+		<node name="ouijabot_pos_test" pkg="ouijabot_proxy" type="ouijabot_pos_test.py" output="screen">
 			<param name="velMax_l" value=".5" />
 			<param name="velMax_a" value=".2" />
 			<param name="cmdFrq" value="20" />
 			<param name="id" value="$(arg id)" />
 		</node>
 	</group>
-
-	<include file="$(find grape_ros)/launch/vrpn.launch">
-		<arg name="robot_ns" value="$(arg robot_type)$(arg id)" />
-		<arg name="vrpn_name" value="$(arg robot_type)$(arg id)"/>
-	</include>
-
 </launch>

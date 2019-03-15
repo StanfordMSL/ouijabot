@@ -24,7 +24,7 @@ from ouijabot.msg import Current # custom ROS msg for motor current (4 floats)
 from ouijabot.srv import Enable_IMU # enable uploading IMU measurement
 from ouijabot.srv import Enable_Current # enable uploading current measurement
 
-#custom ROSS clases 
+#custom ROS clases 
 
 from ouijabot_proxy.ouijabotProxy import OuijabotProxy as Prox
 
@@ -64,14 +64,16 @@ if __name__ == '__main__':
     """
     This tests the ouijabot proxy class for high level control
     this will simply move the ouibot around a series of waypoints"""
-    ouijabotTest = OuijabotProxy("raw/pose", "cmd_vel")
+    rospy.init_node('ouijabot_pos_test', anonymous=True)
+    ID = str(rospy.get_param('~id')) #getting ID
+    ouijabotTest = Prox("/vrpn_client_node/ouijabot"+ID+"/pose", "cmd_vel")
+
     readInput = ""
     while readInput != "x":
         readInput = raw_input("enter x to start: ")
     ouijabotTest.setEnable(True)
 
     posTest(ouijabotTest)
-    #testVelocity(ouijabotTest)
 
 
     sys.exit()

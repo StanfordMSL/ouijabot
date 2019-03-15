@@ -1,10 +1,8 @@
 <launch>
 	<!-- launches a oujiabot with local VRPN client -->
-
-	<arg name="robot_type" default="ouijabot"/>
-	<arg name="id" default="1"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
 	
-	<include file="$(find vrpn_client_ros)/launch/sample.launch"/>
+	<arg name="robot_type" default="ouijabot"/>
+	<arg name="id" default="2"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
 
 	<group ns="$(arg robot_type)$(arg id)">
 		<node name="ouijabotTest" pkg="ouijabot_proxy" type="ouijabotProxy.py" output="screen">
@@ -14,4 +12,10 @@
 			<param name="id" value="$(arg id)" />
 		</node>
 	</group>
+
+	<include file="$(find ouijabot_proxy)/launch/vrpn.launch">
+		<arg name="robot_ns" value="$(arg robot_type)$(arg id)" />
+		<arg name="vrpn_name" value="$(arg robot_type)$(arg id)"/>
+	</include>
+
 </launch>
