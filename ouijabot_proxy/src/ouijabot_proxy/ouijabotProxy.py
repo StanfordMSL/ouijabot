@@ -46,7 +46,6 @@ class OuijabotProxy(object):
         #main serial comm
         #ros node
         
-
         #parms
         if params is None:
             self.velMax_l= rospy.get_param('~velMax_l')
@@ -154,11 +153,18 @@ class OuijabotProxy(object):
 
         self.setVelocityTarget(vel)
 
+
+     def wrapPi(self, a):
+        # returns the angle wrapped -pi to pi
+        b = a
+        if a < -np.pi or a > np.pi:
+            b = ((a + np.pi) % (2 * np.pi)) - np.pi
+        return b
+
     def circularDist(self, a1, a2):
         #returns the difference between two angles, a counting for wrapping
         #assumes the angles are in [-pi, pi]
-        assert a1>-np.pi and a1<=np.pi
-        assert a2>-np.pi and a2<=np.pi
+        a1, a2 = map(wrap, (a1, a2))
 
         diff = ( a1 - a2 + np.pi ) % (2*np.pi) - np.pi;
         return diff + (2*np.pi) if diff < -np.pi else diff 
@@ -255,9 +261,6 @@ class OuijabotProxy(object):
         else:
             self.stop()
         self.cmdPub.publish(self.twistCmd)
-
-
-
 
 def testVelocity(bot):
     vels=[(1, 0, 0 ),

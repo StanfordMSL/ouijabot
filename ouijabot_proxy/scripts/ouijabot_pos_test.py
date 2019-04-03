@@ -26,7 +26,7 @@ from ouijabot.srv import Enable_Current # enable uploading current measurement
 
 #custom ROS clases 
 
-from ouijabot_proxy.ouijabotProxy import OuijabotProxy as Prox
+from ouijabot_proxy.ouijabotProxy import OuijabotProxy
 
 
 def posTest(bot):
