@@ -43,9 +43,7 @@ class OuijabotProxy(object):
     def __init__(self, postionTopic, velocityTopic, params=None, mode="vel"):
         #postionTopic optitrack or filtered position data 
         #velocityTopic ouijabot output topic 
-        #main serial comm
-        #ros node
-        
+
         #parms
         if params is None:
             self.velMax_l= rospy.get_param('~velMax_l')
@@ -59,11 +57,10 @@ class OuijabotProxy(object):
             self.ID = params['ID']
 
         self.modes = ['vel', 'pos']
-        self.mode =mode 
+        self.mode = mode 
 
-        #pub 
+        #pubs
         self.cmdPub = rospy.Publisher(velocityTopic, Twist, queue_size=15)
-
         #subs
         rospy.Subscriber(postionTopic, PoseStamped, self.poseCB)
 
@@ -72,7 +69,7 @@ class OuijabotProxy(object):
         self.poseTarget = None
         self.twistCmd = Twist()
         self.enable = False
-
+        #pose check
         counter = 0 
         while self.pose is None:
             #wait for pose 
@@ -83,11 +80,8 @@ class OuijabotProxy(object):
                 raise RuntimeError("Position Lock Failure")
 
         rospy.loginfo("Ouijabot Position Established")
-
-
         #timers
         self.controlTimer = rospy.Timer(rospy.Duration(1./self.cmdFrq), self.controlLoop)
-
         rospy.loginfo("Ouijabot Initialization Exited Successfully: Clear for Launch")
 
     # call back from optirack data
@@ -154,7 +148,7 @@ class OuijabotProxy(object):
         self.setVelocityTarget(vel)
 
 
-     def wrapPi(self, a):
+    def wrapPi(self, a):
         # returns the angle wrapped -pi to pi
         b = a
         if a < -np.pi or a > np.pi:
@@ -164,7 +158,7 @@ class OuijabotProxy(object):
     def circularDist(self, a1, a2):
         #returns the difference between two angles, a counting for wrapping
         #assumes the angles are in [-pi, pi]
-        a1, a2 = map(wrap, (a1, a2))
+        a1, a2 = map(self.wrapPi, (a1, a2))
 
         diff = ( a1 - a2 + np.pi ) % (2*np.pi) - np.pi;
         return diff + (2*np.pi) if diff < -np.pi else diff 
@@ -294,10 +288,8 @@ if __name__ == '__main__':
     while readInput != "x":
         readInput = raw_input("enter x to start: ")
     ouijabotTest.setEnable(True)
-
+    #run test
     testVelocity(ouijabotTest)
-
-
     sys.exit()
 
 

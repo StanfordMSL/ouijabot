@@ -6,6 +6,6 @@
     <node name="telop1" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
         <param name="control_freq" value="10"/>
         <param name="maxVel" value="1"/>
-        <remap from="vel_out" to="/ouijabot4/cmd_vel" /> 
+        <remap from="vel_out" to="/ouijabot3/cmd_vel" /> 
     </node>
 </launch>
