@@ -30,7 +30,9 @@ export ROS_MASTER_URI=http://relay.local:11311 # PC hostname/IP
  - `ouijabot.setPoseTarget(pose)` to set the 2D pose of the robot, where pose = (x, y, theta)
  - `ouijabot.getPose()` to get the 2D pose. Optional arg `full=True` will return a ros POSE message
 
-
+### User Package: "vrpn"
+- Track rigid bodies with VRPN/Optirack
+- Use [vrpn_client_ros package](https://github.com/StanfordMSL/vrpn)
 
 
 ### IMU Calibration
