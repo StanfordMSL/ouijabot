@@ -115,7 +115,7 @@ class OuijabotProxy(object):
         self.mode="pose"
 
         #wrap angle
-        self.poseTarget = (pose[0], pose[1], self.wrapPi(theta)) #pose is x, y, theta 
+        self.poseTarget = (pose[0], pose[1], self.wrapPi(pose[2])) #pose is x, y, theta 
 
 
     def poseControl(self):
