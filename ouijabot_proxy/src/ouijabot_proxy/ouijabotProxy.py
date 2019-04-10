@@ -114,16 +114,8 @@ class OuijabotProxy(object):
         #pose is a (x, y, theta) NOT A ROS MSG POSE
         self.mode="pose"
 
-        #check for angle 
-        theta= pose[2] 
-        #frist wrap to 2 pi
-        if theta> 2*np.pi or theta < 0:
-            theta= pose[2]%(2*np.pi)
-        #then to -pi, pi
-        if theta >= np.pi:
-            theta = 2*np.pi - theta
-
-        self.poseTarget = (pose[0], pose[1], theta) #pose is x, y, theta 
+        #wrap angle
+        self.poseTarget = (pose[0], pose[1], self.wrapPi(theta)) #pose is x, y, theta 
 
 
     def poseControl(self):
@@ -150,15 +142,15 @@ class OuijabotProxy(object):
 
     def wrapPi(self, a):
         # returns the angle wrapped -pi to pi
-        b = a
         if a < -np.pi or a > np.pi:
-            b = ((a + np.pi) % (2 * np.pi)) - np.pi
-        return b
+            a = ((a + np.pi) % (2 * np.pi)) - np.pi
+        return a
 
     def circularDist(self, a1, a2):
-        #returns the difference between two angles, a counting for wrapping
+        #returns the difference between two angles, accounting for wrapping
         #assumes the angles are in [-pi, pi]
         a1, a2 = map(self.wrapPi, (a1, a2))
+        print a1, a2
 
         diff = ( a1 - a2 + np.pi ) % (2*np.pi) - np.pi;
         return diff + (2*np.pi) if diff < -np.pi else diff 
