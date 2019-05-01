@@ -16,9 +16,11 @@ private:
 
 
   //timer assets 
-  double controlLoopFreq; // frequency for control loop
+  double controlLoopFreq_; // frequency for control loop
+  double max_lin_vel_, max_ang_vel_; // maximum velocities of the robot
   ros::Timer controlTimer_;
   void controlTimerCB(const ros::TimerEvent& event);
+  double my_clamp(double val, double min, double max);
 
 public:
   Telop(); // constructor
@@ -37,6 +39,8 @@ Telop::Telop()
 
   // create main loop timer
   ros::param::get("~control_freq", controlLoopFreq_);
+  ros::param::get("~velMax_l", max_lin_vel_);
+  ros::param::get("~velMax_a", max_ang_vel_);
 
   controlTimer_ = nh_.createTimer(
       ros::Duration(1.0/controlLoopFreq_), 
@@ -48,14 +52,36 @@ void Telop::joystick_callback(const sensor_msgs::JoyConstPtr &joy)
   // retrieve the joystick values
   // reference about the Joy message: http://docs.ros.org/kinetic/api/sensor_msgs/html/msg/Joy.html
   // reference about the Twist message: http://docs.ros.org/api/geometry_msgs/html/msg/Twist.html
-  velocity_.linear.x = - joy->axes[0]; 
-  velocity_.linear.y = joy->axes[1];
-  velocity_.angular.z = joy->axes[2];
+  velocity_.linear.x = joy->axes[1]; 
+  velocity_.linear.y = joy->axes[0];
+  velocity_.angular.z = my_clamp(joy->axes[2], -max_ang_vel_, max_ang_vel_);
+
+  double lin_vel = sqrt(velocity_.linear.x * velocity_.linear.x + velocity_.linear.y * velocity_.linear.y);
+  if(lin_vel > 0.0001)
+  {
+    // This if statement is needed or else divide by zero issues when there is no joystick inputs (lin_vel = 0)
+    double new_lin_vel = my_clamp(lin_vel, -max_lin_vel_, max_lin_vel_);
+    velocity_.linear.x *= new_lin_vel/lin_vel; 
+    velocity_.linear.y *= new_lin_vel/lin_vel;
+  }
 }
 
 void Telop::controlTimerCB(const ros::TimerEvent& event) {
   // publish the velocity command (Twist type)
   velocity_publisher_.publish(velocity_);
+}
+
+double Telop::my_clamp(double val, double min, double max)
+{
+  if(val >= max)
+  {
+    return max;
+  }
+  else if(val <= min)
+  {
+    return min;
+  }
+  return val;
 }
 
 // main function
