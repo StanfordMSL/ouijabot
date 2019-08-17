@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="2" name="Route2" color="16" fill="1" visible="no" active="yes"/>
@@ -857,8 +857,8 @@ https://www.adafruit.com/product/1085</description>
 <wire x1="-5.08" y1="-10.16" x2="10.16" y2="-10.16" width="0.254" layer="94"/>
 <wire x1="10.16" y1="-10.16" x2="10.16" y2="7.62" width="0.254" layer="94"/>
 <wire x1="10.16" y1="7.62" x2="-5.08" y2="7.62" width="0.254" layer="94"/>
-<text x="0" y="7.62" size="1.27" layer="95">&gt;NAME</text>
-<text x="0" y="-12.7" size="1.27" layer="96">&gt;VALUE</text>
+<text x="0" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="0" y="-12.7" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="P2851">
 <pin name="GND@1" x="-7.62" y="0" length="middle"/>
@@ -870,8 +870,8 @@ https://www.adafruit.com/product/1085</description>
 <wire x1="-2.54" y1="-7.62" x2="10.16" y2="-7.62" width="0.254" layer="94"/>
 <wire x1="10.16" y1="-7.62" x2="10.16" y2="7.62" width="0.254" layer="94"/>
 <wire x1="10.16" y1="7.62" x2="-2.54" y2="7.62" width="0.254" layer="94"/>
-<text x="0" y="7.62" size="1.27" layer="95">&gt;NAME</text>
-<text x="0" y="-10.16" size="1.27" layer="95">&gt;VALUE</text>
+<text x="0" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="0" y="-10.16" size="1.778" layer="95">&gt;VALUE</text>
 </symbol>
 <symbol name="BNO055">
 <pin name="GND" x="-7.62" y="-2.54" length="middle"/>
@@ -888,8 +888,8 @@ https://www.adafruit.com/product/1085</description>
 <wire x1="-2.54" y1="-17.78" x2="20.32" y2="-17.78" width="0.254" layer="94"/>
 <wire x1="20.32" y1="-17.78" x2="20.32" y2="10.16" width="0.254" layer="94"/>
 <wire x1="20.32" y1="10.16" x2="-2.54" y2="10.16" width="0.254" layer="94"/>
-<text x="5.08" y="10.16" size="1.27" layer="95">&gt;NAME</text>
-<text x="5.08" y="-20.32" size="1.27" layer="96">&gt;VALUE</text>
+<text x="5.08" y="10.16" size="1.778" layer="95">&gt;NAME</text>
+<text x="5.08" y="-20.32" size="1.778" layer="96">&gt;VALUE</text>
 </symbol>
 <symbol name="TB9051FTG">
 <pin name="M1PWM" x="-12.7" y="20.32" length="middle"/>
@@ -909,14 +909,15 @@ https://www.adafruit.com/product/1085</description>
 <wire x1="-7.62" y1="-22.86" x2="33.02" y2="-22.86" width="0.254" layer="94"/>
 <wire x1="33.02" y1="-22.86" x2="33.02" y2="22.86" width="0.254" layer="94"/>
 <wire x1="33.02" y1="22.86" x2="-7.62" y2="22.86" width="0.254" layer="94"/>
-<text x="7.62" y="22.86" size="1.27" layer="95">&gt;NAME</text>
-<text x="12.7" y="-25.4" size="1.27" layer="96">&gt;VALUE</text>
+<text x="7.62" y="22.86" size="1.778" layer="95">&gt;NAME</text>
+<text x="12.7" y="-25.4" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="M2OCM" x="-12.7" y="-10.16" length="middle"/>
 <pin name="M1OCM" x="-12.7" y="10.16" length="middle"/>
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="ADS1115" uservalue="yes">
+<deviceset name="ADS1115">
+<description>ADS1115 16-Bit ADC - 4 Channel with Programmable Gain Amplifier: https://www.adafruit.com/product/1085</description>
 <gates>
 <gate name="G$1" symbol="ADS1115" x="2.54" y="0"/>
 </gates>
@@ -940,7 +941,7 @@ https://www.adafruit.com/product/1085</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="P2823" uservalue="yes">
+<deviceset name="P2823">
 <description>30:1 Metal Gearmotor 37Dx68L mm with 64 CPR Encoder (Spur Pinion): https://www.pololu.com/product/2823</description>
 <gates>
 <gate name="G$1" symbol="P2823" x="-2.54" y="2.54"/>
@@ -961,7 +962,7 @@ https://www.adafruit.com/product/1085</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="P2851" uservalue="yes">
+<deviceset name="P2851">
 <description>Pololu 5V, 5A Step-Down Voltage Regulator D24V50F5: https://www.pololu.com/product/2851</description>
 <gates>
 <gate name="G$1" symbol="P2851" x="2.54" y="0"/>
@@ -981,7 +982,7 @@ https://www.adafruit.com/product/1085</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="BNO055" uservalue="yes">
+<deviceset name="BNO055">
 <description>Adafruit 9-DOF Absolute Orientation IMU Fusion Breakout - BNO055: https://www.adafruit.com/product/2472</description>
 <gates>
 <gate name="G$1" symbol="BNO055" x="2.54" y="0"/>
@@ -1006,7 +1007,7 @@ https://www.adafruit.com/product/1085</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="TB9051FTG" uservalue="yes">
+<deviceset name="TB9051FTG">
 <description>Dual TB9051FTG Motor Driver Shield for Arduino: https://www.pololu.com/product/2520</description>
 <gates>
 <gate name="G$1" symbol="TB9051FTG" x="-12.7" y="0"/>
