@@ -1228,14 +1228,14 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 </package>
-<package name="1X13">
-<description>&lt;h3&gt;Plated Through Hole -13 Pin&lt;/h3&gt;
+<package name="1X15">
+<description>&lt;h3&gt;Plated Through Hole -15 Pin&lt;/h3&gt;
 &lt;p&gt;Specifications:
-&lt;ul&gt;&lt;li&gt;Pin count:13&lt;/li&gt;
+&lt;ul&gt;&lt;li&gt;Pin count:15&lt;/li&gt;
 &lt;li&gt;Pin pitch:0.1"&lt;/li&gt;
 &lt;/ul&gt;&lt;/p&gt;
 &lt;p&gt;Example device(s):
-&lt;ul&gt;&lt;li&gt;CONN_13&lt;/li&gt;
+&lt;ul&gt;&lt;li&gt;CONN_15&lt;/li&gt;
 &lt;/ul&gt;&lt;/p&gt;</description>
 <wire x1="14.605" y1="1.27" x2="15.875" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="15.875" y1="1.27" x2="16.51" y2="0.635" width="0.2032" layer="21"/>
@@ -1280,13 +1280,18 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <wire x1="-0.635" y1="1.27" x2="-1.27" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="-1.27" y1="-0.635" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="0.635" y1="-1.27" x2="-0.635" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="32.385" y1="1.27" x2="33.655" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="33.655" y1="1.27" x2="34.29" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="34.29" y1="-0.635" x2="33.655" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="29.21" y1="0.635" x2="29.845" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="29.845" y1="1.27" x2="31.115" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="31.115" y1="1.27" x2="31.75" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="31.75" y1="-0.635" x2="31.115" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="31.115" y1="-1.27" x2="29.845" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="29.845" y1="-1.27" x2="29.21" y2="-0.635" width="0.2032" layer="21"/>
-<wire x1="31.75" y1="-0.635" x2="31.75" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="32.385" y1="1.27" x2="31.75" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="31.75" y1="-0.635" x2="32.385" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="33.655" y1="-1.27" x2="32.385" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="24.765" y1="1.27" x2="26.035" y2="1.27" width="0.2032" layer="21"/>
 <wire x1="26.035" y1="1.27" x2="26.67" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="26.67" y1="-0.635" x2="26.035" y2="-1.27" width="0.2032" layer="21"/>
@@ -1317,6 +1322,13 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <wire x1="17.145" y1="1.27" x2="16.51" y2="0.635" width="0.2032" layer="21"/>
 <wire x1="16.51" y1="-0.635" x2="17.145" y2="-1.27" width="0.2032" layer="21"/>
 <wire x1="18.415" y1="-1.27" x2="17.145" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="34.925" y1="1.27" x2="34.29" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="34.925" y1="1.27" x2="36.195" y2="1.27" width="0.2032" layer="21"/>
+<wire x1="36.195" y1="1.27" x2="36.83" y2="0.635" width="0.2032" layer="21"/>
+<wire x1="36.83" y1="0.635" x2="36.83" y2="-0.635" width="0.2032" layer="21"/>
+<wire x1="36.83" y1="-0.635" x2="36.195" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="36.195" y1="-1.27" x2="34.925" y2="-1.27" width="0.2032" layer="21"/>
+<wire x1="34.29" y1="-0.635" x2="34.925" y2="-1.27" width="0.2032" layer="21"/>
 <pad name="1" x="0" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="2" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="3" x="5.08" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
@@ -1330,6 +1342,8 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <pad name="11" x="25.4" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="12" x="27.94" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
 <pad name="13" x="30.48" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="14" x="33.02" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
+<pad name="15" x="35.56" y="0" drill="1.016" diameter="1.8796" rot="R90"/>
 <rectangle x1="14.986" y1="-0.254" x2="15.494" y2="0.254" layer="51"/>
 <rectangle x1="12.446" y1="-0.254" x2="12.954" y2="0.254" layer="51"/>
 <rectangle x1="9.906" y1="-0.254" x2="10.414" y2="0.254" layer="51"/>
@@ -1337,12 +1351,14 @@ Source: http://ecommas.tycoelectronics.com .. ENG_CD_640456_W.pdf</description>
 <rectangle x1="4.826" y1="-0.254" x2="5.334" y2="0.254" layer="51"/>
 <rectangle x1="2.286" y1="-0.254" x2="2.794" y2="0.254" layer="51"/>
 <rectangle x1="-0.254" y1="-0.254" x2="0.254" y2="0.254" layer="51"/>
+<rectangle x1="32.766" y1="-0.254" x2="33.274" y2="0.254" layer="51"/>
 <rectangle x1="30.226" y1="-0.254" x2="30.734" y2="0.254" layer="51"/>
 <rectangle x1="27.686" y1="-0.254" x2="28.194" y2="0.254" layer="51"/>
 <rectangle x1="25.146" y1="-0.254" x2="25.654" y2="0.254" layer="51"/>
 <rectangle x1="22.606" y1="-0.254" x2="23.114" y2="0.254" layer="51"/>
 <rectangle x1="20.066" y1="-0.254" x2="20.574" y2="0.254" layer="51"/>
 <rectangle x1="17.526" y1="-0.254" x2="18.034" y2="0.254" layer="51"/>
+<rectangle x1="35.306" y1="-0.254" x2="35.814" y2="0.254" layer="51"/>
 <text x="-1.27" y="1.397" size="0.6096" layer="25" font="vector" ratio="20">&gt;NAME</text>
 <text x="-1.27" y="-2.032" size="0.6096" layer="27" font="vector" ratio="20">&gt;VALUE</text>
 </package>
@@ -1433,6 +1449,8 @@ https://www.adafruit.com/product/1085</description>
 <wire x1="33.02" y1="22.86" x2="-7.62" y2="22.86" width="0.254" layer="94"/>
 <text x="7.62" y="22.86" size="1.27" layer="95">&gt;NAME</text>
 <text x="12.7" y="-25.4" size="1.27" layer="96">&gt;VALUE</text>
+<pin name="M2OCM" x="-12.7" y="-10.16" length="middle"/>
+<pin name="M1OCM" x="-12.7" y="10.16" length="middle"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -1532,7 +1550,7 @@ https://www.adafruit.com/product/1085</description>
 <gate name="G$1" symbol="TB9051FTG" x="-12.7" y="0"/>
 </gates>
 <devices>
-<device name="" package="1X13">
+<device name="" package="1X15">
 <connects>
 <connect gate="G$1" pin="5VIN" pad="1"/>
 <connect gate="G$1" pin="GND@1" pad="2"/>
@@ -1541,12 +1559,14 @@ https://www.adafruit.com/product/1085</description>
 <connect gate="G$1" pin="M1A" pad="5"/>
 <connect gate="G$1" pin="M1B" pad="6"/>
 <connect gate="G$1" pin="M1DIR" pad="7"/>
-<connect gate="G$1" pin="M1PWM" pad="8"/>
-<connect gate="G$1" pin="M2A" pad="9"/>
-<connect gate="G$1" pin="M2B" pad="10"/>
-<connect gate="G$1" pin="M2DIR" pad="11"/>
-<connect gate="G$1" pin="M2PWM" pad="12"/>
-<connect gate="G$1" pin="VIN" pad="13"/>
+<connect gate="G$1" pin="M1OCM" pad="8"/>
+<connect gate="G$1" pin="M1PWM" pad="9"/>
+<connect gate="G$1" pin="M2A" pad="10"/>
+<connect gate="G$1" pin="M2B" pad="11"/>
+<connect gate="G$1" pin="M2DIR" pad="12"/>
+<connect gate="G$1" pin="M2OCM" pad="13"/>
+<connect gate="G$1" pin="M2PWM" pad="14"/>
+<connect gate="G$1" pin="VIN" pad="15"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -1596,9 +1616,9 @@ https://www.adafruit.com/product/1085</description>
 <attribute name="NAME" x="292.1" y="68.834" size="1.778" layer="95" font="vector"/>
 <attribute name="VALUE" x="292.1" y="50.546" size="1.778" layer="95" font="vector" align="top-left"/>
 </instance>
-<instance part="U$1" gate="G$1" x="86.36" y="22.86" smashed="yes">
-<attribute name="NAME" x="86.36" y="38.1" size="1.778" layer="95"/>
-<attribute name="VALUE" x="91.44" y="-7.62" size="1.778" layer="96"/>
+<instance part="U$1" gate="G$1" x="119.38" y="25.4" smashed="yes" rot="R180">
+<attribute name="NAME" x="119.38" y="10.16" size="1.778" layer="95" rot="R180"/>
+<attribute name="VALUE" x="114.3" y="55.88" size="1.778" layer="96" rot="R180"/>
 </instance>
 <instance part="U$2" gate="G$1" x="355.6" y="134.62" smashed="yes">
 <attribute name="NAME" x="355.6" y="142.24" size="1.27" layer="95"/>
