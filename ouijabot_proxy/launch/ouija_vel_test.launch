@@ -2,7 +2,7 @@
 	<!-- launches a oujiabot with local VRPN client -->
 
 	<arg name="robot_type" default="ouijabot"/>
-	<arg name="id" default="1"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
+	<arg name="id" default="0"/> <!-- This determines the ROS namespace MUST MATCH MOTIVE -->
 	
 	<group ns="$(arg robot_type)$(arg id)">
 		<node name="ouijabotTest" pkg="ouijabot_proxy" type="ouijabotProxy.py" output="screen">

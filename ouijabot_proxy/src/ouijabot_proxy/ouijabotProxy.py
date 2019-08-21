@@ -46,15 +46,23 @@ class OuijabotProxy(object):
 
         #parms
         if params is None:
-            self.velMax_l= rospy.get_param('~velMax_l')
-            self.velMax_a= rospy.get_param('~velMax_a')
-            self.cmdFrq= rospy.get_param('~cmdFrq')
-            self.ID= rospy.get_param('~id')
+            self.velMax_l = rospy.get_param('~velMax_l')
+            self.velMax_a = rospy.get_param('~velMax_a')
+            self.velMax_l = rospy.get_param('~velMin_l')
+            self.velMax_a = rospy.get_param('~velMin_a')
+            self.cmdFrq = rospy.get_param('~cmdFrq')
+            self.ID = rospy.get_param('~id')
+            self.kp_lin = rospy.get_param('~kp_lin')
+            self.kp_ang = rospy.get_param('~kp_ang')
         else:
-            self.velMax_l= params['velMax_l']
-            self.velMax_a= params['velMax_a']
-            self.cmdFrq= params['cmdFrq']
+            self.velMax_l = params['velMax_l']
+            self.velMax_a = params['velMax_a']
+            self.velMin_l = params['velMin_l']
+            self.velMin_a = params['velMin_a']
+            self.cmdFrq = params['cmdFrq']
             self.ID = params['ID']
+            self.kp_lin = params['kp_lin']
+            self.kp_ang = params['kp_ang']
 
         self.modes = ['vel', 'pos']
         self.mode = mode 
@@ -119,10 +127,10 @@ class OuijabotProxy(object):
 
 
     def poseControl(self):
-        kp_lin = 1
-        kp_ang = .08
+        if self.poseTarget is None:
+            return
 
-        poseCurrent= self.getPose()
+        poseCurrent = self.getPose()
         #get velocity in world frame
         dx = self.poseTarget[0] - poseCurrent[0]
         dy = self.poseTarget[1] - poseCurrent[1]
@@ -133,9 +141,9 @@ class OuijabotProxy(object):
         v_body = self.frameTransformR(v_world, poseCurrent[2])
 
 
-        vel = [v_body[0]*kp_lin,
-               v_body[1]*kp_lin, 
-               dtheta*kp_ang] 
+        vel = [v_body[0]*self.kp_lin,
+               v_body[1]*self.kp_lin, 
+               dtheta*self.kp_ang] 
 
         self.setVelocityTarget(vel)
 
@@ -150,7 +158,7 @@ class OuijabotProxy(object):
         #returns the difference between two angles, accounting for wrapping
         #assumes the angles are in [-pi, pi]
         a1, a2 = map(self.wrapPi, (a1, a2))
-        print a1, a2
+        # print a1, a2
 
         diff = ( a1 - a2 + np.pi ) % (2*np.pi) - np.pi;
         return diff + (2*np.pi) if diff < -np.pi else diff 
@@ -163,7 +171,7 @@ class OuijabotProxy(object):
         dx = self.poseTarget[0] - poseCurrent[0]
         dy = self.poseTarget[1] - poseCurrent[1]
 
-        return (dx**2+ dy**2)**.5
+        return (dx**2 + dy**2)**.5
 
 
     def frameTransformR(self, v, a, reverse=False):
@@ -193,12 +201,11 @@ class OuijabotProxy(object):
     def setVelocityTarget(self, vel, frame='R'):
         #frame 'R" sets the target velocity of the robot (v_x, v_y, v_theta) in robot frame
         if frame == 'R':
-
-            self.twistCmd.linear.x= vel[0]
-            self.twistCmd.linear.y= vel[1]
-            self.twistCmd.angular.z= vel[2]
+            self.twistCmd.linear.x = vel[0]
+            self.twistCmd.linear.y = vel[1]
+            self.twistCmd.angular.z = vel[2]
         #frame 'W" sets the target velocity of the robot (v_x, v_y, v_theta) in world frame 
-        elif frame =='W':
+        elif frame == 'W':
             poseCurrent= self.getPose()
             #get velocity in world frame
             dx = vel[0]
@@ -206,9 +213,9 @@ class OuijabotProxy(object):
             v_world = [dx, dy] #2D planar velocity 
             #convert to body frame
             v_body = self.frameTransformR(v_world, poseCurrent[2])
-            self.twistCmd.linear.x= v_body[0]
-            self.twistCmd.linear.y= v_body[1]
-            self.twistCmd.angular.z= vel[2]
+            self.twistCmd.linear.x = v_body[0]
+            self.twistCmd.linear.y = v_body[1]
+            self.twistCmd.angular.z = vel[2]
         else:
             self.stop()
             raise RuntimeError('invalid frame for velocity control')
@@ -222,9 +229,27 @@ class OuijabotProxy(object):
         if velMag_l > self.velMax_l:
             self.twistCmd.linear.x *= (self.velMax_l/velMag_l)
             self.twistCmd.linear.y *= (self.velMax_l/velMag_l)
+        elif velMag_l > 0.01 and velMag_l < self.velMin_l:
+            self.twistCmd.linear.x *= (self.velMin_l/velMag_l)
+            self.twistCmd.linear.y *= (self.velMin_l/velMag_l)
+        # elif velMag_l > self.velMin_l/3 and velMag_l < self.velMin_l:
+        #     self.twistCmd.linear.x *= (self.velMin_l/velMag_l)
+        #     self.twistCmd.linear.y *= (self.velMin_l/velMag_l)
+        # elif velMag_l > 0:
+        #     # this means its positive but less than a third of our min value - just set to 0
+        #     self.twistCmd.linear.x = 0
+        #     self.twistCmd.linear.y = 0
 
         if velMag_a > self.velMax_a:
             self.twistCmd.angular.z *= (self.velMax_a/velMag_a)
+        elif velMag_a > 0.01 and velMag_a < self.velMin_a:
+            self.twistCmd.angular.z *= (self.velMin_a/velMag_a)
+        # elif velMag_a > self.velMin_a/3 and velMag_a < self.velMin_a:
+        #     self.twistCmd.angular.z *= (self.velMin_a/velMag_a)
+        # elif velMag_a > 0:
+        #     # this means its positive but less than a third of our min value - just set to 0
+        #     self.twistCmd.angular.z = 0
+
             
     def getVelocityTarget(self):
         #returns the current velocity setpoint
@@ -238,11 +263,12 @@ class OuijabotProxy(object):
 
     def stop(self):
         #stops the robot 
+        self.poseTarget = None
         self.twistCmd = Twist() #resets the robot
 
     def controlLoop(self, event):
         if self.enable:
-            if self.mode=="pose":
+            if self.mode == "pose":
                 self.poseControl()
         else:
             self.stop()
