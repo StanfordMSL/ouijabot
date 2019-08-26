@@ -2436,6 +2436,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="124.46" y1="101.6" x2="129.54" y2="101.6" width="0.1524" layer="91"/>
 <label x="129.54" y="101.6" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="U$7" gate="G$1" pin="VIN"/>
+<wire x1="12.7" y1="104.14" x2="5.08" y2="104.14" width="0.1524" layer="91"/>
+<label x="5.08" y="104.14" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$1" gate="G$1" pin="VDD"/>
+<wire x1="73.66" y1="86.36" x2="76.2" y2="86.36" width="0.1524" layer="91"/>
+<label x="73.66" y="86.36" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="3.3V" class="0">
 <segment>
@@ -2462,16 +2472,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="U$9" gate="G$1" pin="IOREF"/>
 <wire x1="101.6" y1="68.58" x2="96.52" y2="68.58" width="0.1524" layer="91"/>
 <label x="96.52" y="68.58" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="U$1" gate="G$1" pin="VDD"/>
-<wire x1="73.66" y1="86.36" x2="76.2" y2="86.36" width="0.1524" layer="91"/>
-<label x="73.66" y="86.36" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="U$7" gate="G$1" pin="VIN"/>
-<wire x1="12.7" y1="104.14" x2="5.08" y2="104.14" width="0.1524" layer="91"/>
-<label x="5.08" y="104.14" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="R3/SDA" class="0">
