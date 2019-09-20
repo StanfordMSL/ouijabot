@@ -90,12 +90,14 @@ class OuijabotProxy(object):
         rospy.loginfo("Ouijabot Position Established")
         #timers
         self.controlTimer = rospy.Timer(rospy.Duration(1./self.cmdFrq), self.controlLoop)
+        self.last_pos_time = None  # stores the last time a position was revieved from optitrack
         rospy.loginfo("Ouijabot Initialization Exited Successfully: Clear for Launch")
 
     # call back from optirack data
     def poseCB(self, msg):
         #get pose form topic 
         self.pose=msg.pose
+        self.last_pos_time = rospy.get_time()  # this way the higher level controller can choose what to do if this time is too old (like stop the robot)
 
     def setMode(self, mode):
         if mode not in self.modes:
@@ -120,7 +122,10 @@ class OuijabotProxy(object):
     def setPoseTarget(self, pose):
         #sets the target pose (world frame) of the robot
         #pose is a (x, y, theta) NOT A ROS MSG POSE
-        self.mode="pose"
+        if pose is None:
+            return
+
+        self.mode="pose"  # if we are setting pose, we should be in pose control mode
 
         #wrap angle
         self.poseTarget = (pose[0], pose[1], self.wrapPi(pose[2])) #pose is x, y, theta 
@@ -167,7 +172,7 @@ class OuijabotProxy(object):
         if self.poseTarget is None:
             raise RuntimeError("goal position not set")
 
-        poseCurrent= self.getPose()
+        poseCurrent = self.getPose()
         dx = self.poseTarget[0] - poseCurrent[0]
         dy = self.poseTarget[1] - poseCurrent[1]
 
