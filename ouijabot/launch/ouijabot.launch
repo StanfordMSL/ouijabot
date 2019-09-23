@@ -1,10 +1,11 @@
 <launch>
-    <group ns="ouijabot2" >
+    <group ns="ouijabot3" >
         <node name="mcu_v2" pkg="ouijabot" type="mcu_v2.py" output="screen">
             <param name="maxDelay" value=".5"/>
             <param name="maxVel" value="3"/>
             <param name="readFrq" value="1000"/>
             <param name="writeFrq" value="50"/>
         </node>
+	<node name="current_read" pkg="ouijabot" type="current_read.py" output="screen" />
     </group>
 </launch>
