@@ -16,7 +16,7 @@ chan2 = AnalogIn(ads,ADS.P2)
 chan3 = AnalogIn(ads,ADS.P3)
 
 if __name__=="__main__":
-	rospy.init_node('adc_test')
+	rospy.init_node('current')
 	pub = rospy.Publisher('current',Float64MultiArray,queue_size=10)
 	r = rospy.Rate(100)
 	while not rospy.is_shutdown():

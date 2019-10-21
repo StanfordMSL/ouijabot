@@ -40,7 +40,7 @@ class Ouijabot():
 		vd = np.array([vx,vy,omega])
 
 		self.wd = 100*np.matmul(self.vel_A,vd)
-		print(self.wd)
+		#print(self.wd)
 
 	def stop_bot(self):
 		for i in range(0,4):
