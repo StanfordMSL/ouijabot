@@ -4,7 +4,8 @@
             <param name="maxDelay" value=".5"/>
             <param name="maxVel" value="3"/>
             <param name="readFrq" value="1000"/>
-            <param name="writeFrq" value="50"/>
+            <param name="cmdFrq" value="100"/>
+	    <param name="currFrq" value="100" />
         </node>
 	<node name="current_read" pkg="ouijabot" type="current_read.py" output="screen" />
 	<node name="imu_read" pkg="ouijabot" type="imu_read.py" output="screen" />

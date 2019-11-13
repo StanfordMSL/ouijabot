@@ -5,6 +5,12 @@ import numpy as np
 
 from geometry_msgs.msg import Twist
 
+import board
+import busio
+import adafruit_ads1x15.ads1015 as ADS
+from adafruit_ads1x15.analog_in import AnalogIn
+from std_msgs.msg import Float64MultiArray
+
 class Ouijabot():
 	def __init__(self):
 		self.pwm_nos = [26,27,18,24]
@@ -25,10 +31,25 @@ class Ouijabot():
 		#parameters
 		self.vel_A =(1./3)*np.array([[-1,-1,1],[-1,1,1],[1,1,1],[1,-1,1]]) #translate desired vels to motor commands
 		self.maxDelay = rospy.get_param('~maxDelay')
-		self.cmdFreq = rospy.get_param('~writeFrq')
+		self.cmdFreq = rospy.get_param('~cmdFrq')
+		self.currFreq = rospy.get_param('~currFrq')
 		self.cmdRate = rospy.Rate(self.cmdFreq)
-
 		self.cmdTime = rospy.get_time()
+		self.cmdTimer = rospy.Timer(rospy.Duration(1/self.cmdFreq),self.run())
+		self.currTimer = rospy.Timer(rospy.Duration(1/self.currFreq),self.current_callback())
+
+		self.curr_pub =  rospy.Publisher('current',Float64MultiArray,queue_size=10)
+		self.i2c = busio.I2C(board.SCL, board.SDA)
+
+		self.ads = ADS.ADS1015(i2c)
+
+		self.chan0 = AnalogIn(self.ads,ADS.P0)
+		self.chan1 = AnalogIn(self.ads,ADS.P1)
+		self.chan2 = AnalogIn(self.ads,ADS.P2)
+		self.chan3 = AnalogIn(self.ads,ADS.P3)
+
+		self.channels = [self.chan0,self.chan1,self.chan2,self.chan3]
+
 
 	def cmd_vel_callback(self,data):
 		vx = data.linear.x
@@ -42,6 +63,13 @@ class Ouijabot():
 		self.wd = 100*np.matmul(self.vel_A,vd)
 		#print(self.wd)
 
+	def current_callback(self):
+		data = []
+		for i in range(0,4):
+			data.append(np.sign(wd[i])*self.channels[i].voltage)
+                msg = Float64MultiArray(data=data)
+		self.curr_pub.publish(msg)
+
 	def stop_bot(self):
 		for i in range(0,4):
 			self.pwm_pins[i].ChangeDutyCycle(0)
@@ -53,26 +81,25 @@ class Ouijabot():
 		io.cleanup()
 
 	def run(self):
-		while not rospy.is_shutdown():
-			if (rospy.get_time() - self.cmdTime) > self.maxDelay:
-				self.stop_bot()
-			else:
-				for i in range(0,4):
-                       			if self.wd[i] > 0:
-                                		io.output(self.dir_pins[i],io.HIGH)
-                        		else:
-                                		io.output(self.dir_pins[i],io.LOW)
-                        		self.pwm_pins[i].ChangeDutyCycle(abs(self.wd[i]))
-			self.cmdRate.sleep()
-		self.bot_shutdown()
+		if (rospy.get_time() - self.cmdTime) > self.maxDelay:
+			self.stop_bot()
+		else:
+			for i in range(0,4):
+                  		if self.wd[i] > 0:
+                               		io.output(self.dir_pins[i],io.HIGH)
+                       		else:
+                               		io.output(self.dir_pins[i],io.LOW)
+                       		self.pwm_pins[i].ChangeDutyCycle(abs(self.wd[i]))
 
 if __name__=="__main__":
 	rospy.init_node('ouijabot')
 	io.setmode(io.BCM)
 	io.setwarnings(False)
-	bot = Ouijabot()
 	try:
-		bot.run()
+		Ouijabot()
+		rospy.logwarn("Starting up.")
+		rospy.spin()
 	except rospy.ROSException as e:
 		rospy.logwarn("Shutting down.")
+		self.bot_shutdown()
 		raise e
