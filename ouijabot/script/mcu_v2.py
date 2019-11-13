@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import RPi.GPIO as io
 import rospy
 import numpy as np
@@ -35,13 +35,11 @@ class Ouijabot():
 		self.currFreq = rospy.get_param('~currFrq')
 		self.cmdRate = rospy.Rate(self.cmdFreq)
 		self.cmdTime = rospy.get_time()
-		self.cmdTimer = rospy.Timer(rospy.Duration(1/self.cmdFreq),self.run())
-		self.currTimer = rospy.Timer(rospy.Duration(1/self.currFreq),self.current_callback())
 
 		self.curr_pub =  rospy.Publisher('current',Float64MultiArray,queue_size=10)
 		self.i2c = busio.I2C(board.SCL, board.SDA)
 
-		self.ads = ADS.ADS1015(i2c)
+		self.ads = ADS.ADS1015(self.i2c)
 
 		self.chan0 = AnalogIn(self.ads,ADS.P0)
 		self.chan1 = AnalogIn(self.ads,ADS.P1)
@@ -49,6 +47,9 @@ class Ouijabot():
 		self.chan3 = AnalogIn(self.ads,ADS.P3)
 
 		self.channels = [self.chan0,self.chan1,self.chan2,self.chan3]
+
+		self.cmdTimer = rospy.Timer(rospy.Duration(1/self.cmdFreq),self.run)
+		self.currTimer = rospy.Timer(rospy.Duration(1/self.currFreq),self.current_callback)
 
 
 	def cmd_vel_callback(self,data):
@@ -63,11 +64,11 @@ class Ouijabot():
 		self.wd = 100*np.matmul(self.vel_A,vd)
 		#print(self.wd)
 
-	def current_callback(self):
+	def current_callback(self,event):
 		data = []
 		for i in range(0,4):
-			data.append(np.sign(wd[i])*self.channels[i].voltage)
-                msg = Float64MultiArray(data=data)
+			data.append(np.sign(self.wd[i])*self.channels[i].voltage)
+		msg = Float64MultiArray(data=data)
 		self.curr_pub.publish(msg)
 
 	def stop_bot(self):
@@ -80,16 +81,16 @@ class Ouijabot():
 			self.pwm_pins[i].stop()
 		io.cleanup()
 
-	def run(self):
+	def run(self,event):
 		if (rospy.get_time() - self.cmdTime) > self.maxDelay:
 			self.stop_bot()
 		else:
 			for i in range(0,4):
-                  		if self.wd[i] > 0:
-                               		io.output(self.dir_pins[i],io.HIGH)
-                       		else:
-                               		io.output(self.dir_pins[i],io.LOW)
-                       		self.pwm_pins[i].ChangeDutyCycle(abs(self.wd[i]))
+				if self.wd[i] > 0:
+					io.output(self.dir_pins[i],io.HIGH)
+				else:
+					io.output(self.dir_pins[i],io.LOW)
+				self.pwm_pins[i].ChangeDutyCycle(abs(self.wd[i]))
 
 if __name__=="__main__":
 	rospy.init_node('ouijabot')
