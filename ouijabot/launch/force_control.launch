@@ -7,6 +7,5 @@
 		<param name="cmdFrq" value="100"/>
 		<param name="currFrq" value="20" />
 	</node>
-	<node name="imu_read" pkg="ouijabot" type="imu_read.py" output="screen" />
     </group>
 </launch>

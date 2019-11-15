@@ -33,9 +33,6 @@ class Ouijabot():
 		self.err_prev = np.array([0.,0.,0.,0.]) #last error -- used for 'd' term
 		self.err_int = np.array([0.,0.,0.,0.]) #integral of error -- used for 'i' term
 
-		#subscribers
-		self.cmd_callback = rospy.Subscriber("cmd_wrench", Twist, self.cmd_wrench_callback)
-
 		#parameters
 		self.maxDelay = rospy.get_param('~maxDelay')
 		self.cmdFreq = rospy.get_param('~cmdFrq')
@@ -46,7 +43,7 @@ class Ouijabot():
 		#physical constants
 		self.rW = rospy.get_param('/rW') #wheel radius, m
 		self.rB = rospy.get_param('/rB') #body radius, m
-		self.kMotor = rospy.get_param('/kMotor') #motor constant, N*m/Amp
+		self.kMotor = rospy.get_param('/kMotor')*rospy.get_param('/fudgefactor') #motor constant, N*m/Amp
 		self.kF = kF = np.sqrt(2)*self.kMotor/(2*self.rW) #N/Amp
 		self.kT = kT = self.kF*self.rB #N*m/Amp
 
@@ -56,6 +53,8 @@ class Ouijabot():
 		self.kD = rospy.get_param('/kD') #derivative constant
 		self.kFF = rospy.get_param('/kFF') #feed-forward constant
 		self.iDec = rospy.get_param('/iDec') #factor to wind down integral term
+		self.filt = rospy.get_param('/currFilt') #filtering factor for current measurements
+		self.db = rospy.get_param('/currDB') #current measurement deadband
 
 		#setup allocation matrix
 		self.A = A = np.array([[-kF,-kF,kF,kF],[-kF,kF,kF,-kF],[kT,kT,kT,kT]])
@@ -79,6 +78,9 @@ class Ouijabot():
 		self.currTimer = rospy.Timer(rospy.Duration(1/self.currFreq),self.current_callback)
 		self.cdTimer = rospy.Timer(rospy.Duration(1/self.currFreq),self.cd_callback)
 
+		#subscribers
+		self.cmd_callback = rospy.Subscriber("cmd_wrench", Twist, self.cmd_wrench_callback)
+
 		#TODO: implement 'active' functionality
 
 	def cmd_wrench_callback(self,data):
@@ -100,8 +102,9 @@ class Ouijabot():
 		data = []
 		for i in range(0,4):
 			data.append(sign(self.throttles[i])*self.channels[i].voltage)
-		self.currents = np.array(data)
-		msg = Float64MultiArray(data=data)
+		self.currents = self.currents + self.filt*(np.array(data)-self.currents)
+		#self.currents[np.where(np.abs(self.currents)<=self.db)] = 0.0
+		msg = Float64MultiArray(data=self.currents)
 		self.curr_pub.publish(msg)
 
 	def stop_bot(self):
@@ -124,8 +127,9 @@ class Ouijabot():
 			#a thought: if clipping, stop winding up integrator
 			self.err_int = err_int = self.iDec*self.err_int + e #running error (integral term)
 
-			input = self.kFF*self.curr_des + self.kP*e - self.kD*de - self.kI*err_int
+			input = self.kFF*self.curr_des - self.kP*e - self.kD*de - self.kI*err_int
 			self.throttles = np.clip(input,-100.,100.)
+			self.throttles[np.where(np.abs(self.throttles)<=1.0)] = 0.
 
 			for i in range(0,4):
 				if self.throttles[i] > 0:
