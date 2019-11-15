@@ -1,0 +1,16 @@
+<launch>
+    <arg name="id" default="1" />
+    <arg name="velMax_l" default="100.0" />
+    <arg name="velMax_a" default="5.0" />
+
+    <node name="joy_node" pkg="joy" type="joy_node" output="screen">
+        <param name="dev" type="string" value="/dev/input/js0" />
+        <param name="deadzone" value=".15" />
+    </node>
+    <node name="telop$(arg id)" pkg="ouijabot_telop_cpp" type="telop"  output="screen">
+        <param name="control_freq" value="10"/>
+        <param name="velMax_l" value="$(arg velMax_l)"/>
+        <param name="velMax_a" value="$(arg velMax_a)"/>
+        <remap from="vel_out" to="/ouijabot$(arg id)/cmd_wrench" /> 
+    </node>
+</launch>
