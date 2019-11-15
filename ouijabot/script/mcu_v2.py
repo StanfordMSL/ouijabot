@@ -11,6 +11,8 @@ import adafruit_ads1x15.ads1015 as ADS
 from adafruit_ads1x15.analog_in import AnalogIn
 from std_msgs.msg import Float64MultiArray
 
+sign = lambda x: (1,-1)[x<0]
+
 class Ouijabot():
 	def __init__(self):
 		self.pwm_nos = [26,27,18,24]
@@ -36,7 +38,7 @@ class Ouijabot():
 		self.cmdRate = rospy.Rate(self.cmdFreq)
 		self.cmdTime = rospy.get_time()
 
-		self.curr_pub =  rospy.Publisher('current',Float64MultiArray,queue_size=10)
+		self.curr_pub =  rospy.Publisher('current',Float64MultiArray,queue_size=0)
 		self.i2c = busio.I2C(board.SCL, board.SDA)
 
 		self.ads = ADS.ADS1015(self.i2c)
@@ -67,7 +69,7 @@ class Ouijabot():
 	def current_callback(self,event):
 		data = []
 		for i in range(0,4):
-			data.append(np.sign(self.wd[i])*self.channels[i].voltage)
+			data.append(sign(self.wd[i])*self.channels[i].voltage)
 		msg = Float64MultiArray(data=data)
 		self.curr_pub.publish(msg)
 
