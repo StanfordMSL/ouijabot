@@ -119,7 +119,7 @@ class OuijabotProxy(object):
             euler =  transf.euler_from_quaternion(Q)
             return (self.pose.position.x, self.pose.position.y, euler[2])
 
-    def setPoseTarget(self, pose):
+    def setPoseTarget(self, pose, ang_type='rad'):
         #sets the target pose (world frame) of the robot
         #pose is a (x, y, theta) NOT A ROS MSG POSE
         if pose is None:
@@ -128,7 +128,12 @@ class OuijabotProxy(object):
         self.mode="pose"  # if we are setting pose, we should be in pose control mode
 
         #wrap angle
-        self.poseTarget = (pose[0], pose[1], self.wrapPi(pose[2])) #pose is x, y, theta 
+        if ang_type.lower() == 'rad':
+            self.poseTarget = (pose[0], pose[1], self.wrapPi(pose[2])) #pose is x, y, theta 
+        elif ang_type.lower() == 'deg':
+            self.poseTarget = (pose[0], pose[1], self.wrapPi(np.radians(pose[2]))) #pose is x, y, theta 
+        else:
+            raise RuntimeError("Invalid angle type parameter: ang_type must be either 'rad' or 'deg'. {} was entered".format(ang_type))
 
 
     def poseControl(self):
@@ -314,5 +319,3 @@ if __name__ == '__main__':
     #run test
     testVelocity(ouijabotTest)
     sys.exit()
-
-
