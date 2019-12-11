@@ -1,16 +1,16 @@
 <launch>
-    <arg name="id" default="1" />
     <arg name="force_scale" default="100.0" />
     <arg name="torque_scale" default="5.0" />
 
+    <param name="/ouijabot4/offset_angle" value="1.57" />
     <node name="joy_node" pkg="joy" type="joy_node" output="screen">
         <param name="dev" type="string" value="/dev/input/js0" />
         <param name="deadzone" value=".15" />
     </node>
-    <node name="telop$(arg id)" pkg="ouijabot_telop_cpp" type="fc_telop.py"  output="screen">
+    <node name="telop_global" pkg="ouijabot_telop_cpp" type="fc_telop.py"  output="screen">
         <param name="control_freq" value="10"/>
         <param name="force_scale" value="$(arg force_scale)"/>
         <param name="torque_scale" value="$(arg torque_scale)"/>
-        <remap from="vel_out" to="/ouijabot$(arg id)/cmd_wrench" />
+        <remap from="vel_out" to="/fc/cmd_wrench" />
     </node>
 </launch>
