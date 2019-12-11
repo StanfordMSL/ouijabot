@@ -2,9 +2,12 @@
 	<param name="/rW" value="0.03" />
 	<param name="/rB" value="0.12" />
 	<param name="/kMotor" value="0.257" />
-	<param name="/kP" value="0.1" />
-	<param name="/kI" value="0.0" />
-	<param name="/kD" value="0.0" />
-	<param name="/kFF" value="25." />
-	<param name="/iDec" value="0.95" />
+	<param name="/fudgefactor" value="5." />
+	<param name="/kP" value="75.0" />
+	<param name="/kI" value="20." />
+	<param name="/kD" value="10." />
+	<param name="/kFF" value="100." />
+	<param name="/iDec" value="0.8" />
+	<param name="/currFilt" value="0.3" />
+	<param name="/currDB" value="0.05" />
 </launch>
