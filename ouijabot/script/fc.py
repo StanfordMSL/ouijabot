@@ -51,7 +51,7 @@ class Ouijabot():
 		self.kP = rospy.get_param('/kP') #proportional constant 
 		self.kI = rospy.get_param('/kI') #integral constant
 		self.kD = rospy.get_param('/kD') #derivative constant
-		self.kFFlin = rospy.get_param('/kFF') #feed-forward constant
+		self.kFF = rospy.get_param('/kFF') #feed-forward constant
 		self.iDec = rospy.get_param('/iDec') #factor to wind down integral term
 		self.filt = rospy.get_param('/currFilt') #filtering factor for current measurements
 		self.db = rospy.get_param('/currDB') #current measurement deadband
@@ -136,7 +136,7 @@ class Ouijabot():
 					io.output(self.dir_pins[i],io.HIGH)
 				else:
 					io.output(self.dir_pins[i],io.LOW)
-				#self.pwm_pins[i].ChangeDutyCycle(abs(self.throttles[i]))
+				self.pwm_pins[i].ChangeDutyCycle(abs(self.throttles[i]))
 
 			self.err_prev = e #store previous error term for derivative term
 
