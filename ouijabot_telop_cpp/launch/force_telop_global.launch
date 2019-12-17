@@ -2,6 +2,8 @@
     <arg name="force_scale" default="100.0" />
     <arg name="torque_scale" default="5.0" />
 
+    <include file="$(find ouijabot)/launch/params.launch" />
+
     <param name="/ouijabot1/offset_angle" value="-1.57" />
     <param name="/ouijabot2/offset_angle" value="3.14" />
     <param name="/ouijabot3/offset_angle" value="1.57" />
