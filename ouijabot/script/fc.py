@@ -57,7 +57,7 @@ class Ouijabot():
 		self.db = rospy.get_param('/currDB') #current measurement deadband
 
 		#setup allocation matrix
-		self.A = A = np.array([[-kF,-kF,kF,kF],[-kF,kF,kF,-kF],[kT,kT,kT,kT]])
+		self.A = A = np.array([[kF,-kF,-kF,kF],[-kF,-kF,kF,kF],[kT,kT,kT,kT]])
 		self.A_wrench = A.T@np.linalg.inv(A @ A.T)
 
 		#setup current i/o
