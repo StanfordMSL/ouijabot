@@ -100,9 +100,12 @@ class Ouijabot():
 
 	def current_callback(self,event):
 		data = []
-		for i in range(0,4):
-			data.append(sign(self.throttles[i])*self.channels[i].voltage)
-		self.currents = self.currents + self.filt*(np.array(data)-self.currents)
+		try:
+			for i in range(0,4):
+				data.append(sign(self.throttles[i])*self.channels[i].voltage)
+			self.currents = self.currents + self.filt*(np.array(data)-self.currents)
+		except:
+			rospy.logwarn('current read error')
 		#self.currents[np.where(np.abs(self.currents)<=self.db)] = 0.0
 		msg = Float64MultiArray(data=self.currents)
 		self.curr_pub.publish(msg)

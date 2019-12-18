@@ -3,6 +3,7 @@
     <arg name="torque_scale" default="5.0" />
 
     <include file="$(find ouijabot)/launch/params.launch" />
+    <include file="$(find vrpn_client_ros)/launch/optitrack.launch" />
 
     <param name="/ouijabot1/offset_angle" value="-1.57" />
     <param name="/ouijabot2/offset_angle" value="3.14" />
