@@ -20,6 +20,9 @@ if __name__=="__main__":
 	pub = rospy.Publisher('current',Float64MultiArray,queue_size=10)
 	r = rospy.Rate(100)
 	while not rospy.is_shutdown():
-		msg = Float64MultiArray(data=[chan0.voltage,chan1.voltage,chan2.voltage,chan3.voltage])
-		pub.publish(msg)
+        try:
+            msg = Float64MultiArray(data=[chan0.voltage,chan1.voltage,chan2.voltage,chan3.voltage])
+            pub.publish(msg)
+        except:
+            rospy.logwarn('current read error')
 		r.sleep()
