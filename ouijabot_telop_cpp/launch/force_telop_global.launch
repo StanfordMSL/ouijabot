@@ -19,6 +19,6 @@
         <param name="control_freq" value="10"/>
         <param name="force_scale" value="$(arg force_scale)"/>
         <param name="torque_scale" value="$(arg torque_scale)"/>
-        <remap from="vel_out" to="/fc/cmd_wrench" />
+        <remap from="vel_out" to="/fc/cmd_global" />
     </node>
 </launch>
