@@ -35,6 +35,7 @@ class Ouijabot():
 		self.maxDelay = rospy.get_param('~maxDelay')
 		self.cmdFreq = rospy.get_param('~cmdFrq')
 		self.currFreq = rospy.get_param('~currFrq')
+		self.cmdMode = rospy.get_param('~cmdMode','equal')
 		self.cmdRate = rospy.Rate(self.cmdFreq)
 		self.cmdTime = rospy.get_time()
 
@@ -60,10 +61,14 @@ class Ouijabot():
 		omega = data.angular.z
 
 		self.cmdTime = rospy.get_time()
-
 		vd = np.array([vx,vy,omega])
 
-		self.wd = 100*np.matmul(self.vel_A,vd)
+		if self.cmdMode == 'equal':
+			self.wd = 100*np.matmul(self.vel_A,vd)
+		elif self.cmdMode == 'max':
+			if np.sum(np.abs(vd)) > 1:
+				vd = vd / np.sum(np.abs(vd))
+			self.wd = 3*100*np.matmul(self.vel_A,vd)
 		#print(self.wd)
 
 	def current_callback(self,event):

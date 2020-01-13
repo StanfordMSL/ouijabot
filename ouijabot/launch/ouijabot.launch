@@ -5,6 +5,7 @@
             <param name="maxVel" value="3"/>
             <param name="readFrq" value="10"/>
             <param name="cmdFrq" value="100"/>
+            <param name="cmdMode" value="max" />
 	    <param name="currFrq" value="20" />
         </node>
 #	<node name="imu_read" pkg="ouijabot" type="imu_read.py" output="screen" />
