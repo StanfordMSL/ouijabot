@@ -1,0 +1,14 @@
+<launch>
+    <arg name="cmdMode" default="equal" />
+    <group ns="$(env HOSTNAME)" >
+        <node name="mcu_v2" pkg="ouijabot" type="velocity_control.py" output="screen">
+            <param name="maxDelay" value=".5"/>
+            <param name="maxVel" value="3"/>
+            <param name="readFrq" value="10"/>
+            <param name="cmdFrq" value="100"/>
+            <param name="cmdMode" value="$(arg cmdMode)" />
+         </node>
+  	     <node name="imu_read" pkg="ouijabot" type="imu_read.py" output="screen" />
+         <node name="current_read" pkg="ouijabot" type="current_read.py" ouput="screen" />
+    </group>
+</launch>

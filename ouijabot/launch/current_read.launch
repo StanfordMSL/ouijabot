@@ -1,0 +1,5 @@
+<launch>
+    <group ns="$(env HOSTNAME)" >
+         <node name="current_read" pkg="ouijabot" type="current_read.py" ouput="screen" />
+    </group>
+</launch>
