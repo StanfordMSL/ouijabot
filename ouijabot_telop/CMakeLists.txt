@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ouijabot_telop_cpp)
+project(ouijabot_telop)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -104,7 +104,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES ouijabot_telop_cpp
+#  LIBRARIES ouijabot_telop
 #  CATKIN_DEPENDS geometry_msgs joy roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
@@ -121,24 +121,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(ouijabot_telop_cpp
-#   src/${PROJECT_NAME}/ouijabot_telop_cpp.cpp
+# add_library(ouijabot_telop
+#   src/${PROJECT_NAME}/ouijabot_telop.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(ouijabot_telop_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(ouijabot_telop ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(ouijabot_telop_cpp_node src/ouijabot_telop_cpp_node.cpp)
+# add_executable(ouijabot_telop_node src/ouijabot_telop_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(ouijabot_telop_cpp_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(ouijabot_telop_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(ouijabot_telop_cpp_node
+# target_link_libraries(ouijabot_telop_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -157,7 +157,7 @@ include_directories(
  )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS ouijabot_telop_cpp ouijabot_telop_cpp_node
+# install(TARGETS ouijabot_telop ouijabot_telop_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -182,7 +182,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_ouijabot_telop_cpp.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_ouijabot_telop.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
